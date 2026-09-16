@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Đổi mật khẩu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var tk = Session["TaiKhoan"] as Project_Cellphoness.Models.TaiKhoan;
+}
+
+<div style="max-width: 1100px; margin: 30px auto; display: flex; gap: 20px; align-items: flex-start;">
+    <!-- CỘT TRÁI: Menu Sidebar -->
+    <div style="width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;">
+        <div style="padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee;">
+            <div style="width: 50px; height: 50px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ccc;">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <div style="font-size: 12px; color: #888;">Tài khoản của</div>
+                <strong style="font-size: 16px; color: #333;">@tk.HoTen</strong>
+            </div>
+        </div>
+        <div style="padding: 10px 0;">
+            <a href="/TaiKhoan/ThongTinCaNhan" style="display: block; padding: 12px 20px; color: #333; text-decoration: none; font-weight: bold; transition: 0.2s;">
+                <i class="fa-solid fa-address-card" style="width: 25px; color: #555;"></i> Hồ sơ của tôi
+            </a>
+            <a href="/TaiKhoan/LichSuDonHang" style="display: block; padding: 12px 20px; color: #333; text-decoration: none; font-weight: bold; transition: 0.2s;">
+                <i class="fa-solid fa-clipboard-list" style="width: 25px; color: #555;"></i> Đơn mua của tôi
+            </a>
+            <!-- Đang ở trang Đổi mật khẩu nên menu này sáng lên -->
+            <a href="/TaiKhoan/DoiMatKhau" style="display: block; padding: 12px 20px; color: var(--red-cps); text-decoration: none; font-weight: bold; background: #fff5f5; border-left: 3px solid var(--red-cps);">
+                <i class="fa-solid fa-lock" style="width: 25px;"></i> Đổi mật khẩu
+            </a>
+            <a href="/TaiKhoan/DangXuat" style="display: block; padding: 12px 20px; color: #333; text-decoration: none; font-weight: bold; transition: 0.2s;">
+                <i class="fa-solid fa-power-off" style="width: 25px; color: #dc3545;"></i> Đăng xuất
+            </a>
+        </div>
+    </div>
+
+    <!-- CỘT PHẢI: Form đổi mật khẩu -->
+    <div style="flex: 1; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h2 style="margin: 0 0 5px 0; color: #333; font-size: 20px;">Đổi mật khẩu</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;">Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
+
+        @if (ViewBag.ThanhCong != null)
+        {
+            <div style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #c8e6c9;">
+                <i class="fa-solid fa-circle-check"></i> @ViewBag.ThanhCong
+            </div>
+        }
+
+        @if (ViewBag.Loi != null)
+        {
+            <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb;">
+                <i class="fa-solid fa-circle-exclamation"></i> @ViewBag.Loi
+            </div>
+        }
+
+        <form method="post" action="@Url.Action("DoiMatKhau", "TaiKhoan")" style="max-width: 500px;">
+            @Html.AntiForgeryToken()
+
+            <div style="margin-bottom: 20px; display: flex; align-items: center;">
+                <label style="width: 150px; color: #555; font-weight: bold; text-align: right; padding-right: 20px;">Mật khẩu hiện tại</label>
+                <input type="password" name="MatKhauCu" required style="flex: 1; padding: 10px 15px; border: 1px solid #ccc; border-radius: 5px; outline: none;" />
+            </div>
+
+            <div style="margin-bottom: 20px; display: flex; align-items: center;">
+                <label style="width: 150px; color: #555; font-weight: bold; text-align: right; padding-right: 20px;">Mật khẩu mới</label>
+                <input type="password" name="MatKhauMoi" required style="flex: 1; padding: 10px 15px; border: 1px solid #ccc; border-radius: 5px; outline: none;" placeholder="Ít nhất 8 ký tự" />
+            </div>
+
+            <div style="margin-bottom: 25px; display: flex; align-items: center;">
+                <label style="width: 150px; color: #555; font-weight: bold; text-align: right; padding-right: 20px;">Xác nhận mật khẩu</label>
+                <input type="password" name="XacNhanMatKhau" required style="flex: 1; padding: 10px 15px; border: 1px solid #ccc; border-radius: 5px; outline: none;" />
+            </div>
+
+            <div style="display: flex; align-items: center;">
+                <div style="width: 150px; padding-right: 20px;"></div>
+                <button type="submit" style="background: var(--red-cps); color: #fff; border: none; padding: 12px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                    XÁC NHẬN
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

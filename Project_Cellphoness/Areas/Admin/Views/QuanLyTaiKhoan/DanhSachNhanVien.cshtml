@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.TaiKhoan>
+
+@{
+    ViewBag.Title = "Quản lý Nhân viên";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1200px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-user-tie"></i> QUẢN LÝ TÀI KHOẢN NHÂN VIÊN</h2>
+
+        <!-- Nút liên kết tới trang tạo tài khoản nhân viên mới -->
+        <a href="@Url.Action("TaoTaiKhoanNhanVien", "QuanLyTaiKhoan")" style="background: var(--red-cps); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-plus"></i> Thêm Nhân Viên Mới
+        </a>
+    </div>
+
+    <!-- Khu vực hiển thị thông báo thành công hoặc lỗi bảo mật -->
+    @if (TempData["ThongBao"] != null)
+    {
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #c3e6cb;">
+            <i class="fa-solid fa-check-circle"></i> @TempData["ThongBao"]
+        </div>
+    }
+    @if (TempData["LoiQuyen"] != null)
+    {
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb;">
+            <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiQuyen"]
+        </div>
+    }
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #343a40; color: white; text-align: left;">
+                <th style="padding: 12px; font-weight: bold; width: 60px;">Mã TK</th>
+                <th style="padding: 12px; font-weight: bold;">Họ Tên</th>
+                <th style="padding: 12px; font-weight: bold;">Điện Thoại</th>
+                <th style="padding: 12px; font-weight: bold;">Email / Tài khoản</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center;">Trạng Thái</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center; width: 220px;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef; transition: 0.2s;">
+                    <td style="padding: 12px; font-weight: bold;">#@item.MaTK</td>
+                    <td style="padding: 12px; font-weight: bold; color: var(--red-cps);">@item.HoTen</td>
+                    <td style="padding: 12px;">@item.SoDienThoai</td>
+                    <td style="padding: 12px;">@item.Email</td>
+
+                    <td style="padding: 12px; text-align: center;">
+                        @if (item.TrangThai == true)
+                        {
+                            <span style="background: #28a745; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;"><i class="fa-solid fa-check"></i> Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span style="background: #dc3545; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;"><i class="fa-solid fa-lock"></i> Bị Khóa</span>
+                        }
+                    </td>
+
+                    <td style="padding: 12px; text-align: center; display: flex; gap: 8px; justify-content: center;">
+                        <!-- Nút Khóa / Mở Khóa -->
+                        @if (item.TrangThai == true)
+                        {
+                            <a href="@Url.Action("ThayDoiTrangThai", "QuanLyTaiKhoan", new { id = item.MaTK })" style="background: #dc3545; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-ban"></i> Khóa
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("ThayDoiTrangThai", "QuanLyTaiKhoan", new { id = item.MaTK })" style="background: #17a2b8; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-unlock-keyhole"></i> Mở
+                            </a>
+                        }
+
+                        <!-- ============================================== -->
+                        <!-- NÚT PHÂN QUYỀN (GỌI TỚI ACTION PHANQUYEN) -->
+                        <!-- ============================================== -->
+                        <a href="@Url.Action("PhanQuyen", "QuanLyTaiKhoan", new { id = item.MaTK })" style="background: #ffc107; color: #000; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-key"></i> Phân quyền
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

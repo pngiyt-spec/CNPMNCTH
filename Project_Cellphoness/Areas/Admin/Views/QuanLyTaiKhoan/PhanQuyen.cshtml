@@ -1,0 +1,60 @@
+﻿@model Project_Cellphoness.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Phân quyền nhân viên";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+    <h2 style="color: var(--red-cps); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+        <i class="fa-solid fa-user-shield"></i> PHÂN QUYỀN NHÂN VIÊN
+    </h2>
+
+    <p>Đang phân quyền cho tài khoản: <strong style="color: #333; font-size: 16px;">@Model.HoTen</strong> (@Model.Email)</p>
+
+    <!-- Bắt đầu form phân quyền -->
+    <form action="@Url.Action("PhanQuyen", "QuanLyTaiKhoan")" method="post" style="margin-top: 20px;">
+        @Html.AntiForgeryToken()
+        <!-- Truyền ngầm ID của nhân viên đang được phân quyền -->
+        <input type="hidden" name="MaTK" value="@Model.MaTK" />
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 25px;">
+            <h4 style="margin-top: 0; color: #555;">B1: Chọn các quyền hạn cho phép</h4>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <label style="cursor: pointer; font-size: 15px;">
+                    <input type="checkbox" name="QuyenHan" value="QL_SanPham" style="transform: scale(1.2); margin-right: 10px;"
+                           @(Model.DanhSachQuyen != null && Model.DanhSachQuyen.Contains("QL_SanPham") ? "checked" : "")>
+                    Quản lý Sản phẩm (Thêm, Sửa, Xóa)
+                </label>
+
+                <label style="cursor: pointer; font-size: 15px;">
+                    <input type="checkbox" name="QuyenHan" value="QL_DonHang" style="transform: scale(1.2); margin-right: 10px;"
+                           @(Model.DanhSachQuyen != null && Model.DanhSachQuyen.Contains("QL_DonHang") ? "checked" : "")>
+                    Quản lý Đơn hàng (Duyệt, Hủy đơn)
+                </label>
+
+                <label style="cursor: pointer; font-size: 15px;">
+                    <input type="checkbox" name="QuyenHan" value="QL_Kho" style="transform: scale(1.2); margin-right: 10px;"
+                           @(Model.DanhSachQuyen != null && Model.DanhSachQuyen.Contains("QL_Kho") ? "checked" : "")>
+                    Quản lý Kho & Cảnh báo tồn kho
+                </label>
+
+                <label style="cursor: pointer; font-size: 15px;">
+                    <input type="checkbox" name="QuyenHan" value="QL_Voucher" style="transform: scale(1.2); margin-right: 10px;"
+                           @(Model.DanhSachQuyen != null && Model.DanhSachQuyen.Contains("QL_Voucher") ? "checked" : "")>
+                    Quản lý Mã giảm giá (Voucher)
+                </label>
+            </div>
+        </div>
+
+        <!-- B2: Nút lưu thay đổi -->
+        <div style="text-align: right;">
+            <a href="@Url.Action("DanhSachNhanVien", "QuanLyTaiKhoan")" style="text-decoration: none; color: #666; font-weight: bold; margin-right: 20px;">Hủy bỏ</a>
+            <button type="submit" style="background: #28a745; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+            </button>
+        </div>
+    </form>
+</div>

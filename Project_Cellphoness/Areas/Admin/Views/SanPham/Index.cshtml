@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.SanPham>
+
+@{
+    ViewBag.Title = "Quản lý Sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1200px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-box-open"></i> DANH SÁCH SẢN PHẨM</h2>
+
+        <a href="@Url.Action("Create", "SanPham")" style="background: var(--red-cps); color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s;">
+            <i class="fa-solid fa-plus"></i> Thêm Sản Phẩm
+        </a>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #343a40; color: white; text-align: left;">
+                <th style="padding: 12px; font-weight: bold; width: 80px;">Hình</th>
+                <th style="padding: 12px; font-weight: bold;">Tên Sản Phẩm</th>
+                <th style="padding: 12px; font-weight: bold;">Hãng</th>
+                <th style="padding: 12px; font-weight: bold;">Giá Bán</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center;">Kho</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center;">Trạng Thái</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center; width: 200px;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef;">
+                    <td style="padding: 10px;">
+                        <img src="@item.HinhAnh" alt="Ảnh SP" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/60?text=No+Image'" />
+                    </td>
+                    <td style="padding: 10px; font-weight: bold; color: #333;">@item.TenSP</td>
+                    <td style="padding: 10px;">@item.MaHang</td>
+                    <td style="padding: 10px; color: var(--red-cps); font-weight: bold;">@String.Format("{0:0,0}", item.GiaBan).Replace(",", ".") đ</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold;">@item.SoLuongTon</td>
+                    <td style="padding: 10px; text-align: center;">
+                        @if (item.TrangThai == 1)
+                        {
+                            <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold;">Đang bán</span>
+                        }
+                        else
+                        {
+                            <span style="background: #6c757d; color: white; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: bold;">Ngừng bán</span>
+                        }
+                    </td>
+                    <td style="padding: 10px; text-align: center;">
+                        <a href="@Url.Action("Edit", "SanPham", new { id = item.MaSP })" style="background: #ffc107; color: #333; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-right: 5px; font-weight: bold;">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </a>
+                        <a href="@Url.Action("Delete", "SanPham", new { id = item.MaSP })" style="background: #dc3545; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">
+                            <i class="fa-solid fa-trash"></i> Ẩn sản phẩm
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

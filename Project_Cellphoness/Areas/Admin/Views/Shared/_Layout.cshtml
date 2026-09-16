@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin CellphoneS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --red-cps: #D70018; /* Màu đỏ đặc trưng CellphoneS */
+            --sidebar-bg: #212529;
+            --sidebar-hover: #343a40;
+            --bg-main: #f4f6f9;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ----- SIDEBAR CỘT TRÁI ----- */
+        .admin-sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            text-align: center;
+            background-color: var(--red-cps);
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+            .sidebar-menu li {
+                border-bottom: 1px solid #2b3035;
+            }
+
+            .sidebar-menu a {
+                display: flex;
+                align-items: center;
+                padding: 15px 20px;
+                color: #c2c7d0;
+                text-decoration: none;
+                font-weight: 500;
+                transition: 0.3s;
+            }
+
+                .sidebar-menu a i {
+                    width: 30px;
+                    font-size: 18px;
+                }
+
+                .sidebar-menu a:hover {
+                    background-color: var(--sidebar-hover);
+                    color: #fff;
+                    border-left: 4px solid var(--red-cps);
+                }
+
+        /* ----- CỘT NỘI DUNG PHẢI ----- */
+        .admin-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background-color: #fff;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* CSS NÚT HEADER */
+        .btn-header-action {
+            padding: 6px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-header-comment {
+            background: #f3ebff;
+            color: #6f42c1;
+            border: 1px solid #6f42c1;
+        }
+
+            .btn-header-comment:hover {
+                background: #6f42c1;
+                color: #fff;
+            }
+
+        .btn-header-banner {
+            background: #fff3ea;
+            color: #fd7e14;
+            border: 1px solid #fd7e14;
+        }
+
+            .btn-header-banner:hover {
+                background: #fd7e14;
+                color: #fff;
+            }
+
+        /* VÙNG RENDER BODY */
+        .admin-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+            .admin-content table {
+                width: 100%;
+                background: #fff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            .admin-content th {
+                background: #333;
+                color: white;
+                padding: 12px 15px;
+                text-align: left;
+                text-transform: uppercase;
+                font-size: 13px;
+            }
+
+            .admin-content td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #eee;
+                vertical-align: middle;
+            }
+
+            .admin-content tr:hover {
+                background-color: #f9f9f9;
+            }
+
+            .admin-content h2 {
+                margin-top: 0;
+                color: #333;
+                border-bottom: 2px solid var(--red-cps);
+                display: inline-block;
+                padding-bottom: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    @{
+        var adminLog = Session["TaiKhoan"] as Project_Cellphoness.Models.TaiKhoan;
+    }
+
+    <div class="admin-sidebar">
+        <a href="/Admin/SanPham" class="sidebar-brand">
+            <i class="fa-solid fa-mobile-screen"></i> ADMIN CPS
+        </a>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/Admin/Home/Index"><i class="fa-solid fa-chart-line"></i> Bảng điều khiển</a>
+            </li>
+            <li>
+                <a href="/Admin/SanPham"><i class="fa-solid fa-box-open"></i> Quản lý Sản phẩm</a>
+            </li>
+            <li>
+                <a href="/Admin/SanPham/SapHetHang" style="color: #ffc107;"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo tồn kho</a>
+            </li>
+            <li>
+                <a href="/Admin/QuanLyHang"><i class="fa-solid fa-tags"></i> Quản lý Hãng sản xuất</a>
+            </li>
+            <li>
+                <a href="/Admin/QuanLyDonHang"><i class="fa-solid fa-file-invoice-dollar"></i> Quản lý Đơn hàng</a>
+            </li>
+            <li>
+                <a href="/Admin/QuanLyMaGiamGia"><i class="fa-solid fa-ticket"></i> Quản lý Mã giảm giá</a>
+            </li>
+
+            <!-- Quản lý khách hàng hiển thị cho cả Admin và Nhân viên -->
+            <li>
+                <a href="/Admin/QuanLyTaiKhoan"><i class="fa-solid fa-users"></i> Quản lý Khách hàng</a>
+            </li>
+
+            <!-- QĐ21: Các Menu nhạy cảm chỉ hiển thị cho Admin Cấp cao (MaChucVu = 1) -->
+            @if (adminLog != null && adminLog.MaChucVu == 1)
+            {
+                <li>
+                    <a href="/Admin/QuanLyTaiKhoan/DanhSachNhanVien"><i class="fa-solid fa-user-tie"></i> Danh sách  Tài Khoản Nhân viên</a>
+                </li>
+                <li>
+                    <a href="/Admin/QuanLyTaiKhoan/DanhSachAdmin"><i class="fa-solid fa-user-shield"></i> Phân Quyền Admin</a>
+                </li>
+                <li>
+                    <a href="/Admin/QuanLyTaiKhoan/TaoTaiKhoanNhanVien" style="color: #4caf50;"><i class="fa-solid fa-user-plus"></i> Tạo TK / Phân quyền</a>
+                </li>
+                <li>
+                    <a href="/Admin/Home/BaoCaoDoanhThu" style="color: #17a2b8;"><i class="fa-solid fa-chart-pie"></i> Báo cáo Doanh thu</a>
+                </li>
+            }
+
+            <li style="margin-top: 20px; border-top: 1px solid #444;">
+                <a href="/" target="_blank"><i class="fa-solid fa-store"></i> Xem trang Khách Hàng</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-header">
+            <h3 style="margin: 0; color: #555;"><i class="fa-solid fa-chart-line"></i> Bảng Điều Khiển Hệ Thống</h3>
+
+            <div class="admin-user">
+
+                <a href="@Url.Action("Index", "QuanLyDanhGia")" class="btn-header-action btn-header-comment">
+                    <i class="fa-solid fa-comments"></i> Duyệt bình luận
+                </a>
+
+                <a href="@Url.Action("Index", "QuanLyBanner")" class="btn-header-action btn-header-banner">
+                    <i class="fa-solid fa-images"></i> Quản lý Banner
+                </a>
+
+                <span style="color: #666; margin-left: 10px;">
+                    <i class="fa-solid fa-user-tie"></i> Chào,
+                    <b>@(adminLog != null ? adminLog.HoTen : "Sếp")</b>
+                </span>
+
+                <a href="/TaiKhoan/DangXuat" style="color: #fff; background: #dc3545; padding: 5px 15px; border-radius: 5px; text-decoration: none; font-size: 14px; margin-left: 10px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            @RenderBody()
+        </div>
+    </div>
+
+</body>
+</html>

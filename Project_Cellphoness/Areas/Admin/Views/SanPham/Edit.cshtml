@@ -1,0 +1,102 @@
+﻿@model Project_Cellphoness.Models.SanPham
+
+@{
+    ViewBag.Title = "Chỉnh sửa sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml"; // Dùng Layout Admin màu đen xịn
+}
+
+<div style="max-width: 800px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps, #D70018); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-pen-to-square"></i> CHỈNH SỬA SẢN PHẨM</h2>
+        <a href="@Url.Action("Index", "SanPham")" style="color: #666; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.MaSP)
+        @Html.HiddenFor(model => model.NgayTao)
+
+        <h4 style="color: #D70018; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-box"></i> 1. Thông tin cơ bản</h4>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <label style="font-weight: bold; color: #555;">Tên Sản Phẩm</label>
+                @Html.TextBoxFor(model => model.TenSP, new { @class = "form-control", style = "width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;", required = "required" })
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #555;">Hãng Sản Xuất (Danh mục)</label>
+                @Html.DropDownList("MaHang", null, htmlAttributes: new { @class = "form-control", style = "width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;", required = "required" })
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <label style="font-weight: bold; color: #555;">Giá Bán (đ)</label>
+                @Html.TextBoxFor(model => model.GiaBan, new { @class = "form-control", type = "number", style = "width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;", required = "required" })
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #555;">Số Lượng Tồn</label>
+                @Html.TextBoxFor(model => model.SoLuongTon, new { @class = "form-control", type = "number", style = "width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;", required = "required" })
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Đường dẫn Hình Ảnh (URL)</label>
+            @Html.TextBoxFor(model => model.HinhAnh, new { @class = "form-control", style = "width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" })
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <label style="font-weight: bold; color: #555;">Trạng Thái Kinh Doanh</label>
+            <div style="margin-top: 5px;">
+                <label style="margin-right: 20px; font-weight: normal;">
+                    @Html.RadioButtonFor(model => model.TrangThai, 1) Còn bán
+                </label>
+                <label style="font-weight: normal;">
+                    @Html.RadioButtonFor(model => model.TrangThai, 0) Ngừng bán
+                </label>
+            </div>
+        </div>
+
+        <h4 style="color: #D70018; font-weight: bold; margin-bottom: 15px; border-top: 1px solid #eee; padding-top: 20px;">
+            <i class="fa-solid fa-microchip"></i> 2. Thông số kỹ thuật (Phục vụ So sánh)
+        </h4>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <label style="font-weight: bold; color: #555;">Màn hình</label>
+                <input type="text" name="ManHinh" value="@ViewBag.ManHinh" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: 6.7 inch, Super Retina XDR OLED" />
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #555;">Chip xử lý</label>
+                <input type="text" name="Chip" value="@ViewBag.Chip" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: Apple A17 Pro 6 nhân" />
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <label style="font-weight: bold; color: #555;">Dung lượng RAM</label>
+                <input type="text" name="RAM" value="@ViewBag.RAM" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: 8 GB" />
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #555;">Bộ nhớ trong (ROM)</label>
+                <input type="text" name="ROM" value="@ViewBag.ROM" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: 256 GB" />
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+            <div>
+                <label style="font-weight: bold; color: #555;">Camera (Trước & Sau)</label>
+                <input type="text" name="Camera" value="@ViewBag.Camera" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: Chính 48MP, Phụ 12MP..." />
+            </div>
+            <div>
+                <label style="font-weight: bold; color: #555;">Dung lượng Pin</label>
+                <input type="text" name="Pin" value="@ViewBag.Pin" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" placeholder="VD: 4422 mAh, Sạc nhanh 20W" />
+            </div>
+        </div>
+
+        <button type="submit" style="background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px;">
+            <i class="fa-solid fa-floppy-disk"></i> LƯU THAY ĐỔI
+        </button>
+    }
+</div>

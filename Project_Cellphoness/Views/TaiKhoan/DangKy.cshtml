@@ -1,0 +1,61 @@
+﻿@model Project_Cellphoness.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width:500px; margin: 40px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+    <h2 style="color:var(--red-cps); text-align:center; margin-top:0;">TẠO TÀI KHOẢN MỚI</h2>
+
+    @using (Html.BeginForm("DangKy", "TaiKhoan", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight:bold;">Họ và tên</label>
+            <input type="text" name="HoTen" value="@(Model != null ? Model.HoTen : "")" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập họ và tên..." />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight:bold;">Số điện thoại</label>
+            <input type="text" name="SoDienThoai" value="@(Model != null ? Model.SoDienThoai : "")" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập số điện thoại..." />
+
+            @if (ViewBag.LoiSDT != null)
+            {
+                <span style="color: #dc3545; font-size: 13px; font-weight: bold; margin-top: 5px; display: block;">@ViewBag.LoiSDT</span>
+            }
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight:bold;">Địa chỉ Email</label>
+            <input type="email" name="Email" value="@(Model != null ? Model.Email : "")" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập email..." />
+
+            @if (ViewBag.LoiEmail != null)
+            {
+                <span style="color: #dc3545; font-size: 13px; font-weight: bold; margin-top: 5px; display: block;">@ViewBag.LoiEmail</span>
+            }
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight:bold;">Mật khẩu</label>
+            <input type="password" name="MatKhau" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập mật khẩu..." />
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight:bold;">Xác nhận mật khẩu</label>
+            <input type="password" name="XacNhanMatKhau" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập lại mật khẩu..." />
+
+            @if (ViewBag.LoiMatKhau != null)
+            {
+                <span style="color: #dc3545; font-size: 13px; font-weight: bold; margin-top: 5px; display: block;">@ViewBag.LoiMatKhau</span>
+            }
+        </div>
+
+        <button type="submit" style="width:100%; background:var(--red-cps); color:#fff; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">ĐĂNG KÝ</button>
+    }
+
+    <div style="text-align:center; margin-top:20px;">
+        Đã có tài khoản? <a href="/TaiKhoan/DangNhap" style="color:var(--red-cps); font-weight:bold; text-decoration:none;">Đăng nhập</a>
+    </div>
+</div>

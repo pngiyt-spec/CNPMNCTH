@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.DonHang>
+
+@{
+    ViewBag.Title = "Quản lý Đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1000px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h2 style="color: #333; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px;"><i class="fa-solid fa-clipboard-list"></i> DANH SÁCH ĐƠN HÀNG</h2>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #f8f9fa; text-align: left; border-bottom: 2px solid #dee2e6;">
+                <th style="padding: 12px; font-weight: bold; color: #495057;">Mã ĐH</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057;">Khách Hàng</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057;">Ngày Đặt</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057;">Tổng Tiền</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057; text-align: center;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef;">
+                    <td style="padding: 12px; font-weight: bold;">#@item.MaDH</td>
+                    <td style="padding: 12px;">@item.HoTenNhan<br /><small style="color: #6c757d;">@item.SDTNhan</small></td>
+                    <td style="padding: 12px;">@(item.NgayDat.HasValue ? item.NgayDat.Value.ToString("dd/MM/yyyy HH:mm") : "")</td>
+                    <td style="padding: 12px; color: var(--red-cps); font-weight: bold;">@String.Format("{0:0,0}", item.TongTien).Replace(",", ".") đ</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <a href="@Url.Action("ChiTiet", "QuanLyDonHang", new { id = item.MaDH })" style="background: #17a2b8; color: #fff; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block; margin-right: 5px;">
+                            <i class="fa-solid fa-eye"></i> Xem
+                        </a>
+
+                        <a href="@Url.Action("InHoaDon", "QuanLyDonHang", new { id = item.MaDH })" target="_blank" style="background-color: #28a745; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block;">
+                            <i class="fa-solid fa-print"></i> In
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

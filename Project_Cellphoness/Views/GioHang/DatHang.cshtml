@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.GioHang>
+
+@{
+    ViewBag.Title = "Thanh toán đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .checkout-container {
+        max-width: 800px;
+        margin: 20px auto;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .checkout-form, .checkout-summary {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .checkout-form {
+        flex: 1.5;
+        min-width: 300px;
+    }
+
+    .checkout-summary {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed #eee;
+        padding: 10px 0;
+    }
+
+    .btn-submit {
+        background: var(--red-cps);
+        color: #fff;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 15px;
+        transition: 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #b00012;
+        }
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-form">
+        <h2 style="color:var(--red-cps); margin-top:0;">Thông tin giao hàng</h2>
+
+        @if (TempData["LoiThanhToan"] != null)
+        {
+            <div style="background-color: #f8d7da; color: #721c24; padding: 12px 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb;">
+                <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiThanhToan"]
+            </div>
+        }
+
+        @using (Html.BeginForm("DatHang", "GioHang", FormMethod.Post))
+        {
+            <div class="form-group">
+                <label>Họ và tên người nhận</label>
+                <input type="text" name="TenKhachHang" class="form-control" required placeholder="Nhập họ và tên..." />
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" name="SoDienThoai" class="form-control" required placeholder="Nhập số điện thoại..." />
+            </div>
+
+            <!-- Ô NHẬP ĐỊA CHỈ TRUYỀN THỐNG -->
+            <div class="form-group">
+                <label>Địa chỉ nhận hàng (Chi tiết)</label>
+                <textarea name="DiaChi" class="form-control" rows="3" required placeholder="Gõ đầy đủ số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Phương thức thanh toán</label>
+                <select name="PhuongThucTT" class="form-control" style="font-weight: bold; color: #333;">
+                    @if (ViewBag.TongTien > 20000000)
+                    {
+                        <option value="COD" disabled style="color: #aaa;">🚫 Thanh toán khi nhận hàng (COD) - KHÔNG ÁP DỤNG</option>
+                        <option value="VNPAY" selected>💳 Thanh toán trực tuyến VNPAY (Mã QR/Thẻ ATM)</option>
+                    }
+                    else
+                    {
+                        <option value="COD">💵 Thanh toán khi nhận hàng (COD)</option>
+                        <option value="VNPAY">💳 Thanh toán trực tuyến VNPAY (Mã QR/Thẻ ATM)</option>
+                    }
+                </select>
+
+                @if (ViewBag.TongTien > 20000000)
+                {
+                    <div style="color: #D70018; font-size: 13px; font-style: italic; margin-top: 8px;">
+                        <i class="fa-solid fa-circle-info"></i> Theo quy định, các đơn hàng có giá trị trên 20.000.000 VNĐ bắt buộc thanh toán trực tuyến qua VNPAY.
+                    </div>
+                }
+            </div>
+
+            <button type="submit" class="btn-submit">XÁC NHẬN ĐẶT HÀNG</button>
+        }
+    </div>
+
+    <div class="checkout-summary">
+        <h3 style="margin-top:0;">Đơn hàng của bạn</h3>
+        <p style="color:#666; font-size:14px;">Số lượng: <b>@ViewBag.TongSoLuong</b> sản phẩm</p>
+
+        @foreach (var item in Model)
+        {
+            <div class="summary-item" style="align-items: center;">
+                <div style="flex: 1; padding-right: 10px;">
+                    <div style="font-size:14px; font-weight:600; color:#333; margin-bottom:3px;">@item.sTenSP</div>
+                    <div style="font-size:12px; color:#888;">Số lượng: @(item.iSoLuong)</div>
+                </div>
+                <div style="color:var(--red-cps); font-weight:bold; font-size:15px;">
+                    @String.Format("{0:0,0}", item.dThanhTien).Replace(",", ".") đ
+                </div>
+            </div>
+        }
+
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ccc;">
+            <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 10px; color: #555;">
+                <span>Tạm tính:</span>
+                <strong>@String.Format("{0:0,0}", Model.Sum(n => n.dThanhTien)).Replace(",", ".") đ</strong>
+            </div>
+
+            @if (ViewBag.TienGiam != null && ViewBag.TienGiam > 0)
+            {
+                <div style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 10px; color: #28a745;">
+                    <span><i class="fa-solid fa-tag"></i> Khuyến mãi:</span>
+                    <strong>- @String.Format("{0:0,0}", ViewBag.TienGiam).Replace(",", ".") đ</strong>
+                </div>
+            }
+
+            <div style="display: flex; justify-content: space-between; font-size: 18px; margin-top: 10px; color: var(--red-cps);">
+                <strong>TỔNG CỘNG:</strong>
+                <strong style="font-size: 22px;">@String.Format("{0:0,0}", ViewBag.TongTien).Replace(",", ".") đ</strong>
+            </div>
+        </div>
+    </div>
+</div>

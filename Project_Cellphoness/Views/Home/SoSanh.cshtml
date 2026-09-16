@@ -1,0 +1,336 @@
+﻿@{
+    ViewBag.Title = "So sánh điện thoại";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Ép kiểu an toàn để sử dụng trong Razor
+    var sp1 = ViewBag.SP1 as Project_Cellphoness.Models.SanPham;
+    var sp2 = ViewBag.SP2 as Project_Cellphoness.Models.SanPham;
+    var tskt1 = ViewBag.TSKT1 as Project_Cellphoness.Models.ThongSoKyThuat;
+    var tskt2 = ViewBag.TSKT2 as Project_Cellphoness.Models.ThongSoKyThuat;
+}
+
+<style>
+    .compare-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        margin-top: 20px;
+        margin-bottom: 50px;
+    }
+
+    .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .compare-table th, .compare-table td {
+            border: 1px solid #eee;
+            padding: 15px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .compare-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .compare-table .spec-label {
+            background-color: #f8f9fa;
+            text-align: right;
+            font-weight: bold;
+            color: #555;
+            width: 20%;
+            vertical-align: middle;
+        }
+
+    .product-img-compare {
+        max-width: 200px;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 15px;
+    }
+
+    .btn-choose {
+        background: var(--red-cps, #D70018);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    /* ========================================= */
+    /* CSS MỚI CHO TÍNH NĂNG AI PHÂN TÍCH        */
+    /* ========================================= */
+    .btn-ai-analyze {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 20px;
+    }
+
+        .btn-ai-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 75, 43, 0.6);
+        }
+
+        .btn-ai-analyze:disabled {
+            background: #ccc;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .ai-result-box {
+        display: none;
+        margin-top: 25px;
+        padding: 25px;
+        background: #fffafa;
+        border: 2px dashed #ffb3b3;
+        border-radius: 12px;
+        text-align: left;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #333;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+    }
+
+    /* ========================================= */
+    /* CSS MỚI CHO KHUNG TÌM KIẾM BẰNG AJAX      */
+    /* ========================================= */
+    .search-compare-box {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+        .search-compare-box input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-compare-box button {
+            background: #f8f9fa;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+            color: #555;
+            border-left: 1px solid #ccc;
+            transition: 0.2s;
+        }
+
+            .search-compare-box button:hover {
+                background: #e2e6ea;
+                color: #D70018;
+            }
+</style>
+
+<div class="compare-container">
+    <h2 style="text-align:center; color: #D70018; margin-bottom: 30px; font-weight: 800; text-transform:uppercase;">
+        <i class="fa-solid fa-code-compare"></i> SO SÁNH SẢN PHẨM
+    </h2>
+
+    <table class="compare-table">
+        <tr>
+            <th class="spec-label" style="text-align:center;">SẢN PHẨM</th>
+            <th style="width: 40%;">
+                <img src="@sp1.HinhAnh" class="product-img-compare" onerror="this.src='https://via.placeholder.com/200'" /><br />
+                <h3 style="color:#333; margin:10px 0;">@sp1.TenSP</h3>
+                <h4 style="color:#D70018;">@String.Format("{0:0,0}", sp1.GiaBan).Replace(",", ".") đ</h4>
+                <a href="@Url.Action("Details", "Home", new { id = sp1.MaSP })" class="btn btn-default" style="border:1px solid #ccc; margin-top:10px;">Chi tiết</a>
+            </th>
+            <th style="width: 40%;">
+                @if (sp2 == null)
+                {
+                    <div style="padding: 30px 20px; background: #fdfdfd; border: 2px dashed #ccc; border-radius: 10px;">
+                        <h4 style="color:#666; margin-bottom:20px;">Chọn sản phẩm thứ 2 để so sánh</h4>
+
+                        <!-- KHUNG BAO GỒM CẢ TÌM KIẾM VÀ DROPDOWN -->
+                        <div style="width:80%; margin: 0 auto;">
+
+                            <!-- 1. Ô Tìm Kiếm Ajax -->
+                            <div class="search-compare-box">
+                                <input type="text" id="txtSearchCompare" placeholder="Nhập tên máy cần tìm..." onkeypress="if(event.keyCode==13) { searchCompareAI(@sp1.MaSP); return false; }" />
+                                <button type="button" onclick="searchCompareAI(@sp1.MaSP)" title="Tìm kiếm">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
+
+                            <!-- 2. Form Submit và Dropdown -->
+                            @using (Html.BeginForm("SoSanh", "Home", FormMethod.Get))
+                            {
+                                <input type="hidden" name="id1" value="@sp1.MaSP" />
+
+                                // Đã thêm id="id2" vào HTML Attributes để JS có thể bắt được nó
+                                @Html.DropDownList("id2", (SelectList)ViewBag.ListDienThoai, "-- Chọn điện thoại --", new { id = "id2", @class = "form-control", style = "width:100%; padding:10px; margin-bottom: 15px; border-radius: 5px;", required = "required" })
+
+                                <button type="submit" class="btn-choose">So sánh ngay</button>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <img src="@sp2.HinhAnh" class="product-img-compare" onerror="this.src='https://via.placeholder.com/200'" /><br />
+                    <h3 style="color:#333; margin:10px 0;">@sp2.TenSP</h3>
+                    <h4 style="color:#D70018;">@String.Format("{0:0,0}", sp2.GiaBan).Replace(",", ".") đ</h4>
+                    <a href="@Url.Action("Details", "Home", new { id = sp2.MaSP })" class="btn btn-default" style="border:1px solid #ccc; margin-top:10px;">Chi tiết</a>
+                    <br /><br />
+                    <a href="@Url.Action("SoSanh", "Home", new { id1 = sp1.MaSP })" style="color:blue; font-weight:normal; font-size:13px; text-decoration:underline;">Đổi máy khác</a>
+                }
+            </th>
+        </tr>
+
+        <tr>
+            <td class="spec-label">Màn hình</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.ManHinh) ? tskt1.ManHinh : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.ManHinh) ? tskt2.ManHinh : "Đang cập nhật") : "-")</td>
+        </tr>
+        <tr>
+            <td class="spec-label">Chip xử lý</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.Chip) ? tskt1.Chip : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.Chip) ? tskt2.Chip : "Đang cập nhật") : "-")</td>
+        </tr>
+        <tr>
+            <td class="spec-label">Dung lượng RAM</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.RAM) ? tskt1.RAM : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.RAM) ? tskt2.RAM : "Đang cập nhật") : "-")</td>
+        </tr>
+        <tr>
+            <td class="spec-label">Bộ nhớ trong (ROM)</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.ROM) ? tskt1.ROM : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.ROM) ? tskt2.ROM : "Đang cập nhật") : "-")</td>
+        </tr>
+        <tr>
+            <td class="spec-label">Hệ thống Camera</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.Camera) ? tskt1.Camera : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.Camera) ? tskt2.Camera : "Đang cập nhật") : "-")</td>
+        </tr>
+        <tr>
+            <td class="spec-label">Dung lượng Pin</td>
+            <td>@(tskt1 != null && !string.IsNullOrEmpty(tskt1.Pin) ? tskt1.Pin : "Đang cập nhật")</td>
+            <td>@(sp2 != null ? (tskt2 != null && !string.IsNullOrEmpty(tskt2.Pin) ? tskt2.Pin : "Đang cập nhật") : "-")</td>
+        </tr>
+    </table>
+
+    <!-- ========================================================== -->
+    <!-- NÚT GỌI AI PHÂN TÍCH (Chỉ hiện khi đã chọn đủ 2 điện thoại)-->
+    <!-- ========================================================== -->
+    @if (sp2 != null)
+    {
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="btnAiAnalyze" onclick="analyzeWithAI(@sp1.MaSP, @sp2.MaSP)" class="btn-ai-analyze">
+                <i class="fa-solid fa-robot fa-bounce"></i> Nhờ Trợ Lý AI Phân Tích & Khuyên Dùng
+            </button>
+
+            <div id="aiResultBox" class="ai-result-box">
+                <!-- Nội dung phân tích của AI sẽ được in ra đây -->
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        // ========================================================
+        // JS: TÌM KIẾM SẢN PHẨM SO SÁNH (AJAX)
+        // ========================================================
+        function searchCompareAI(idGoc) {
+            const tuKhoa = document.getElementById('txtSearchCompare').value.trim();
+            const selectBox = document.getElementById('id2');
+
+            if (!tuKhoa) {
+                alert("Vui lòng nhập tên điện thoại cần tìm!");
+                return;
+            }
+
+            // Đổi trạng thái dropdown thành Đang tải
+            selectBox.innerHTML = '<option value="">Đang tìm kiếm...</option>';
+
+            // Gọi API C# đã viết ở bước trước
+            fetch(`/Home/TimKiemSanPhamSoSanh?tuKhoa=${encodeURIComponent(tuKhoa)}&idNgoaiTru=${idGoc}`)
+                .then(res => res.json())
+                .then(data => {
+                    // Xóa option cũ
+                    selectBox.innerHTML = '<option value="">-- Chọn điện thoại --</option>';
+
+                    if (data.length > 0) {
+                        // Đổ dữ liệu mới vào
+                        data.forEach(item => {
+                            const opt = document.createElement('option');
+                            opt.value = item.MaSP;
+                            opt.textContent = item.TenSP;
+                            selectBox.appendChild(opt);
+                        });
+                        // Đổi màu viền xanh lá để báo hiệu tìm thấy thành công
+                        selectBox.style.borderColor = "#28a745";
+                        setTimeout(() => selectBox.style.borderColor = "#ccc", 2000);
+                    } else {
+                        selectBox.innerHTML = '<option value="">Không tìm thấy sản phẩm nào khớp tên</option>';
+                    }
+                })
+                .catch(err => {
+                    selectBox.innerHTML = '<option value="">Lỗi kết nối Server!</option>';
+                });
+        }
+
+        // ========================================================
+        // JS: GỌI AI PHÂN TÍCH SO SÁNH 2 MÁY
+        // ========================================================
+        function analyzeWithAI(id1, id2) {
+            const btn = document.getElementById('btnAiAnalyze');
+            const resultBox = document.getElementById('aiResultBox');
+
+            // 1. Chuyển trạng thái nút sang Đang xử lý
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI đang phân tích dữ liệu...';
+
+            // 2. Hiện khung kết quả với thông báo chờ
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = '<div style="text-align:center; color: #666;"><i class="fa-solid fa-circle-notch fa-beat"></i> Vui lòng đợi trong giây lát, AI đang đọc thông số 2 máy...</div>';
+
+            // 3. Gửi Ajax lên C# Backend
+            fetch(`/Home/PhanTichSoSanhAI?id1=${id1}&id2=${id2}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    // 4. Mở khóa nút và đổi chữ
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-robot"></i> Đã Phân Tích Xong (Click để hỏi lại)';
+
+                    if (data.success) {
+                        // 5. In kết quả AI trả về (Thay \n bằng <br/> để hiển thị đúng xuống dòng)
+                        resultBox.innerHTML = data.answer.replace(/\n/g, '<br/>');
+                    } else {
+                        resultBox.innerHTML = '<span style="color:red;"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi: ' + data.message + '</span>';
+                    }
+                })
+                .catch(err => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-robot"></i> Phân tích lại';
+                    resultBox.innerHTML = '<span style="color:red;"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi kết nối đến máy chủ AI. Vui lòng kiểm tra Internet.</span>';
+                });
+        }
+    </script>
+}

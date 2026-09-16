@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.DonHang>
+
+@{
+    ViewBag.Title = "Báo cáo Doanh thu";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Import thư viện Chart.js qua CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px;">
+    <h2 style="color: var(--red-cps); margin-top: 0;"><i class="fa-solid fa-chart-pie"></i> BÁO CÁO DOANH THU</h2>
+
+    <!-- Form Chọn Tháng / Năm -->
+    <form method="get" action="@Url.Action("BaoCaoDoanhThu", "Home")" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+        <div>
+            <label style="font-weight: bold; margin-right: 10px;">Tháng:</label>
+            <select name="thang" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <option value="@i" @(ViewBag.ThangDaChon == i ? "selected" : "")>Tháng @i</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label style="font-weight: bold; margin-right: 10px;">Năm:</label>
+            <input type="number" name="nam" value="@ViewBag.NamDaChon" min="2020" max="2050" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100px;" />
+        </div>
+        <button type="submit" style="background: var(--red-cps); color: white; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">
+            <i class="fa-solid fa-filter"></i> Xem Báo Cáo
+        </button>
+    </form>
+
+    <!-- Thẻ hiển thị Tổng doanh thu -->
+    <div style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; display: inline-block;">
+        <h3 style="margin: 0; font-size: 16px; opacity: 0.9;">TỔNG DOANH THU THÁNG @ViewBag.ThangDaChon/@ViewBag.NamDaChon</h3>
+        <h2 style="margin: 10px 0 0 0; font-size: 32px;">
+            @String.Format("{0:0,0}", ViewBag.TongDoanhThu).Replace(",", ".") VNĐ
+        </h2>
+    </div>
+
+    <!-- Khu vực vẽ biểu đồ Chart.js -->
+    <div style="width: 100%; max-width: 900px; margin: 0 auto 40px auto;">
+        <canvas id="doanhThuChart"></canvas>
+    </div>
+
+    <!-- Bảng chi tiết đơn hàng -->
+    <h3 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">Chi tiết các đơn hàng "Hoàn thành"</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+        <thead>
+            <tr style="background-color: #333; color: white; text-align: left;">
+                <th style="padding: 12px;">Mã ĐH</th>
+                <th style="padding: 12px;">Khách hàng</th>
+                <th style="padding: 12px;">Ngày đặt</th>
+                <th style="padding: 12px; text-align: right;">Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px; font-weight: bold;">#@item.MaDH</td>
+                        <td style="padding: 12px;">@item.HoTenNhan</td>
+                        <td style="padding: 12px;">@(item.NgayDat.HasValue ? item.NgayDat.Value.ToString("dd/MM/yyyy HH:mm") : "")</td>
+                        <td style="padding: 12px; text-align: right; font-weight: bold; color: var(--red-cps);">
+                            @String.Format("{0:0,0}", item.TongTien).Replace(",", ".") đ
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px; color: #888;">Không có dữ liệu doanh thu trong tháng này.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Script cấu hình Chart.js -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById('doanhThuChart').getContext('2d');
+
+        // Lấy dữ liệu chuỗi từ ViewBag và tách thành mảng Javascript
+        var rawLabels = '@ViewBag.BieuDo_Labels';
+        var rawData = '@ViewBag.BieuDo_Data';
+
+        var labelsArray = rawLabels ? rawLabels.split(',') : [];
+        var dataArray = rawData ? rawData.split(',').map(Number) : [];
+
+        var chart = new Chart(ctx, {
+            type: 'bar', // Có thể đổi thành 'line' nếu muốn biểu đồ đường
+            data: {
+                labels: labelsArray,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: dataArray,
+                    backgroundColor: 'rgba(215, 0, 24, 0.7)', // Màu đỏ CellphoneS trong suốt
+                    borderColor: 'rgba(215, 0, 24, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Biểu đồ Doanh thu theo Ngày',
+                        font: { size: 16 }
+                    }
+                }
+            }
+        });
+    });
+</script>

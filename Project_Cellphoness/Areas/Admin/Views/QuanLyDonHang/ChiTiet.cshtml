@@ -1,0 +1,104 @@
+﻿@model Project_Cellphoness.Models.DonHang
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var danhSachChiTiet = ViewBag.DanhSachChiTiet as IEnumerable<Project_Cellphoness.Models.ChiTietDonHang>;
+}
+
+<div style="max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-file-invoice"></i> CHI TIẾT ĐƠN HÀNG #@Model.MaDH</h2>
+        <a href="@Url.Action("Index", "QuanLyDonHang")" style="color: #666; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+    </div>
+
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <p style="margin-bottom: 10px;"><b>Người nhận:</b> @Model.HoTenNhan</p>
+        <p style="margin-bottom: 10px;"><b>Điện thoại:</b> @Model.SDTNhan</p>
+        <p style="margin-bottom: 10px;"><b>Địa chỉ:</b> @Model.DiaChiNhan</p>
+        <p style="margin-bottom: 10px;"><b>Phương thức TT:</b> @Model.PhuongThucTT</p>
+
+        <!-- HIỂN THỊ TÊN NHÂN VIÊN DUYỆT ĐƠN (QĐ18) -->
+        <p style="margin-bottom: 10px; font-size: 15px; border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px;">
+            <strong style="display: inline-block; width: 150px;"><i class="fa-solid fa-user-shield"></i> Người xử lý:</strong>
+            @if (ViewBag.TenNhanVien == "Chưa xử lý (Đơn mới)")
+            {
+                <span style="color: #888; font-style: italic;">@ViewBag.TenNhanVien</span>
+            }
+            else
+            {
+                <span style="color: #D70018; font-weight: bold;">@ViewBag.TenNhanVien</span>
+            }
+        </p>
+    </div>
+
+    @if (Model.TrangThaiDH != null && Model.TrangThaiDH.Contains("Đã hủy"))
+    {
+        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; font-weight: bold; border: 1px solid #f5c6cb; margin-bottom: 20px;">
+            <i class="fa-solid fa-ban"></i> ĐƠN HÀNG NÀY ĐÃ BỊ KHÁCH HÀNG HỦY. KHÔNG THỂ CẬP NHẬT TRẠNG THÁI!
+        </div>
+        <div style="margin-bottom: 20px; padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 8px;">
+            <label style="font-weight: bold; color: #666;">Trạng thái hiện tại:</label>
+            <span style="color: #dc3545; font-weight: bold; font-size: 16px; margin-left: 10px;">@Model.TrangThaiDH</span>
+        </div>
+    }
+    else
+    {
+        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h4 style="margin: 0 0 5px 0; color: #856404;"><i class="fa-solid fa-truck-fast"></i> TÌNH TRẠNG ĐƠN HÀNG</h4>
+                <p style="margin: 0; color: #666; font-size: 14px;">
+                    Trạng thái hiện tại:
+                    <strong style="color: var(--red-cps);">
+                        @(string.IsNullOrEmpty(Model.TrangThaiDH) ? "Chờ xử lý" : Model.TrangThaiDH)
+                    </strong>
+                </p>
+            </div>
+
+            <form action="@Url.Action("CapNhatTrangThai", "QuanLyDonHang")" method="post" style="display: flex; gap: 10px;">
+                <input type="hidden" name="MaDH" value="@Model.MaDH" />
+                <select name="TrangThaiMoi" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; outline: none;">
+                    <option value="Chờ xử lý" @(Model.TrangThaiDH == "Chờ xử lý" || string.IsNullOrEmpty(Model.TrangThaiDH) ? "selected" : "")>Chờ xử lý</option>
+                    <option value="Đang giao hàng" @(Model.TrangThaiDH == "Đang giao hàng" ? "selected" : "")>Đang giao hàng</option>
+                    <option value="Hoàn thành" @(Model.TrangThaiDH == "Hoàn thành" ? "selected" : "")>Hoàn thành</option>
+                </select>
+                <button type="submit" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                    <i class="fa-solid fa-floppy-disk"></i> Lưu
+                </button>
+            </form>
+        </div>
+    }
+
+    <h3 style="font-size: 16px; color: #555;">SẢN PHẨM ĐÃ ĐẶT</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f1f1f1; text-align: left;">
+                <th style="padding: 10px;">Mã SP</th>
+                <th style="padding: 10px;">Đơn Giá</th>
+                <th style="padding: 10px; text-align: center;">Số Lượng</th>
+                <th style="padding: 10px; text-align: right;">Thành Tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (danhSachChiTiet != null)
+            {
+                foreach (var ctdh in danhSachChiTiet)
+                {
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">SP-@ctdh.MaSP</td>
+                        <td style="padding: 10px;">@String.Format("{0:0,0}", ctdh.GiaMua).Replace(",", ".") đ</td>
+                        <td style="padding: 10px; text-align: center;">@ctdh.SoLuong</td>
+                        <td style="padding: 10px; text-align: right; color: var(--red-cps); font-weight: bold;">
+                            @String.Format("{0:0,0}", ctdh.GiaMua * ctdh.SoLuong).Replace(",", ".") đ
+                        </td>
+                    </tr>
+ <!-- Đã thêm thẻ đóng </tr> tại đây -->
+                }
+            }
+        </tbody>
+    </table>
+
+    <div style="text-align: right; margin-top: 20px; font-size: 18px;">
+        Tổng tiền đơn hàng: <b style="color: var(--red-cps);">@String.Format("{0:0,0}", Model.TongTien).Replace(",", ".") đ</b>
+    </div>
+</div>

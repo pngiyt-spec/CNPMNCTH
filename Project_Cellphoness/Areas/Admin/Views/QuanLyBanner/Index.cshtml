@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.Banner>
+
+@{
+    ViewBag.Title = "Quản lý Banner";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1000px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;">
+            <i class="fa-solid fa-images"></i> QUẢN LÝ BANNER SLIDER
+        </h2>
+
+        <a href="@Url.Action("Create", "QuanLyBanner")" style="background-color: #28a745; color: white; padding: 8px 16px; border-radius: 5px; text-decoration: none; font-size: 14px; font-weight: bold; display: inline-block; transition: 0.2s;">
+            <i class="fa-solid fa-plus"></i> Thêm Banner Mới
+        </a>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+            <tr style="background-color: #f8f9fa; text-align: left; border-bottom: 2px solid #dee2e6;">
+                <th style="padding: 12px; font-weight: bold; color: #495057; width: 10%; text-align: center;">Mã</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057; width: 50%;">Hình ảnh xem trước</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057; width: 15%; text-align: center;">Thứ tự vị trí</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057; width: 15%; text-align: center;">Trạng thái</th>
+                <th style="padding: 12px; font-weight: bold; color: #495057; width: 10%; text-align: center;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr style="border-bottom: 1px solid #e9ecef;">
+                        <td style="padding: 12px; text-align: center; font-weight: bold;">#@item.MaBanner</td>
+                        <td style="padding: 12px;">
+                            <div style="border: 1px solid #eee; padding: 5px; border-radius: 5px; background: #fafafa; display: inline-block;">
+                                <img src="@item.HinhAnh" style="max-width: 300px; max-height: 80px; object-fit: contain; display: block;" onerror="this.src='https://via.placeholder.com/300x80?text=Loi+Anh'" />
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.Link))
+                            {
+                                <br /><small style="color: #6c757d; word-break: break-all;">Link: @item.Link</small>
+                            }
+                        </td>
+                        <td style="padding: 12px; text-align: center; font-weight: bold; color: #555;">
+                            Vị trí @item.ViTri
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            @if (item.TrangThai == true)
+                            {
+                                <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 13px;"><i class="fa-solid fa-circle-check"></i> Đang bật</span>
+                            }
+                            else
+                            {
+                                <span style="background: #ffebee; color: #c62828; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 13px;"><i class="fa-solid fa-circle-xmark"></i> Đang tắt</span>
+                            }
+                        </td>
+                        <td style="padding: 12px; text-align: center;">
+                            <a href="@Url.Action("Edit", "QuanLyBanner", new { id = item.MaBanner })" style="background: #17a2b8; color: #fff; padding: 6px 14px; border-radius: 4px; text-decoration: none; font-size: 14px; font-weight: bold; display: inline-block; transition: 0.2s;">
+                                <i class="fa-solid fa-pen-to-square"></i> Cấu hình
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px; color: #999; font-style: italic;">
+                        Chưa có dữ liệu banner nào trong cơ sở dữ liệu.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

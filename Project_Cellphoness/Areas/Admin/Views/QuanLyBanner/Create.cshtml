@@ -1,0 +1,53 @@
+﻿@model Project_Cellphoness.Models.Banner
+
+@{
+    ViewBag.Title = "Thêm Banner Mới";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 700px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid var(--red-cps, #D70018); padding-bottom: 10px;">
+        <i class="fa-solid fa-plus"></i> THÊM BANNER MỚI
+    </h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Đường dẫn Hình ảnh (URL)</label>
+            @Html.TextBoxFor(model => model.HinhAnh, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px; box-sizing: border-box;", required = "required", placeholder = "Nhập link ảnh (VD: https://...)" })
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Link điều hướng khi click (Có thể bỏ trống)</label>
+            @Html.TextBoxFor(model => model.Link, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px; box-sizing: border-box;", placeholder = "Ví dụ: /Home/Details/1" })
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Thứ tự vị trí hiển thị</label>
+            @Html.TextBoxFor(model => model.ViTri, new { @type = "number", @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px; box-sizing: border-box;", required = "required", value = "1" })
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight: bold; color: #555;">Trạng thái hoạt động</label>
+            <div style="margin-top: 8px; font-size: 15px;">
+                <label style="margin-right: 25px; cursor: pointer;">
+                    <input type="radio" name="TrangThai" value="true" checked="checked" /> <span style="color: #28a745; font-weight: bold;">Kích hoạt luôn</span>
+                </label>
+                <label style="cursor: pointer;">
+                    <input type="radio" name="TrangThai" value="false" /> <span style="color: #dc3545; font-weight: bold;">Tạm tắt</span>
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="background: var(--red-cps, #D70018); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-floppy-disk"></i> THÊM MỚI
+            </button>
+            <a href="/Admin/QuanLyBanner" style="background: #6c757d; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; display: flex; align-items: center;">
+                Quay lại
+            </a>
+        </div>
+    }
+</div>

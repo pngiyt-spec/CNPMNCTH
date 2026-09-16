@@ -1,0 +1,265 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.GioHang>
+
+@{
+    ViewBag.Title = "Giỏ hàng của bạn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .cart-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .cart-header {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        color: var(--red-cps);
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f5f5f5;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .cart-img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-right: 15px;
+        transition: transform 0.2s;
+    }
+
+        .cart-img:hover {
+            transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi di chuột vào ảnh */
+        }
+
+    .cart-info {
+        flex: 1;
+    }
+
+    .cart-name {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+        /* Hiệu ứng khi di chuột vào tên sản phẩm */
+        .cart-name a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+            .cart-name a:hover {
+                color: var(--red-cps);
+            }
+
+    .cart-price {
+        color: var(--red-cps);
+        font-weight: bold;
+    }
+
+    .cart-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-qty {
+        background: #f0f0f0;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .btn-qty:hover {
+            background: #e0e0e0;
+        }
+
+    /* ĐÃ BỔ SUNG: CSS cho nút So sánh */
+    .btn-compare {
+        color: #007bff; /* Màu xanh nổi bật cho chức năng so sánh */
+        margin-left: 10px;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.2s;
+    }
+
+        .btn-compare:hover {
+            color: #0056b3;
+        }
+
+    .btn-delete {
+        color: #999;
+        margin-left: 15px;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+        .btn-delete:hover {
+            color: var(--red-cps);
+        }
+
+    .cart-total-box {
+        margin-top: 20px;
+        text-align: right;
+        border-top: 2px solid #eee;
+        padding-top: 20px;
+    }
+
+    .total-price {
+        font-size: 22px;
+        color: var(--red-cps);
+        font-weight: bold;
+    }
+
+    .btn-checkout {
+        background: var(--red-cps);
+        color: #fff;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 15px;
+        transition: background 0.3s;
+    }
+
+        .btn-checkout:hover {
+            background: #b00012;
+        }
+</style>
+
+<div class="cart-container">
+    <h2 class="cart-header"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng của bạn</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div style="text-align:center; padding:40px;">
+            <p style="font-size: 16px;">@ViewBag.ThongBao</p>
+            <a href="/" style="color:var(--red-cps); font-weight:bold; text-decoration:none;">Về trang chủ mua sắm</a>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            <div class="cart-item">
+                <a href="@Url.Action("Details", "Home", new { id = item.iMaSP })">
+                    <img src="@item.sHinhAnh" class="cart-img" title="Nhấn để xem chi tiết" />
+                </a>
+
+                <div class="cart-info">
+                    <div class="cart-name">
+                        <a href="@Url.Action("Details", "Home", new { id = item.iMaSP })">@item.sTenSP</a>
+                    </div>
+                    <div class="cart-price">@String.Format("{0:0,0}", item.dDonGia).Replace(",", ".") đ</div>
+                </div>
+
+                <div class="cart-actions">
+                    <a href="@Url.Action("GiamSoLuong", "GioHang", new { iMaSP = item.iMaSP })" class="btn-qty" style="text-decoration:none; color:#333;">-</a>
+
+                    <span style="font-weight:bold; width: 20px; text-align:center;">@item.iSoLuong</span>
+
+                    <a href="@Url.Action("TangSoLuong", "GioHang", new { iMaSP = item.iMaSP })" class="btn-qty" style="text-decoration:none; color:#333;">+</a>
+
+                    <a href="@Url.Action("SoSanh", "Home", new { id1 = item.iMaSP })" class="btn-compare" title="So sánh cấu hình máy này">
+                        <i class="fa-solid fa-code-compare"></i>
+                    </a>
+
+                    <a href="@Url.Action("XoaGioHang", "GioHang", new { iMaSP = item.iMaSP })" class="btn-delete" title="Xóa khỏi giỏ" onclick="return confirm('Bạn có chắc chắn muốn bỏ @item.sTenSP khỏi giỏ hàng?');">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px dashed #ccc; text-align: left;">
+            <h4 style="margin-top: 0; color: #333; font-size: 16px;"><i class="fa-solid fa-ticket"></i> Mã giảm giá / Khuyến mãi</h4>
+
+            @if (TempData["LoiVoucher"] != null)
+            {
+                <div style="color: #dc3545; margin-bottom: 10px; font-weight: bold; font-size: 14px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiVoucher"]
+                </div>
+            }
+            @if (TempData["ThongBaoVoucher"] != null)
+            {
+                <div style="color: #28a745; margin-bottom: 10px; font-weight: bold; font-size: 14px;">
+                    <i class="fa-solid fa-circle-check"></i> @TempData["ThongBaoVoucher"]
+                </div>
+            }
+
+            @if (Session["Voucher"] == null)
+            {
+                using (Html.BeginForm("ApDungVoucher", "GioHang", FormMethod.Post))
+                {
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" name="maCode" placeholder="Nhập mã giảm giá..." required style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-weight: bold; text-transform: uppercase; outline: none;" />
+                        <button type="submit" style="background: var(--red-cps); color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">ÁP DỤNG</button>
+                    </div>
+                }
+            }
+            else
+            {
+                var vc = (Project_Cellphoness.Models.MaGiamGia)Session["Voucher"];
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; border: 1px solid #c8e6c9;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #2e7d32; font-size: 15px;"><i class="fa-solid fa-tag"></i> Đã áp dụng mã: @vc.MaVoucher</strong>
+                            <div style="color: #555; font-size: 13px; margin-top: 5px;">Giảm @vc.PhanTramGiam% (Tối đa @String.Format("{0:0,0}", vc.GiaTriToiDa) đ)</div>
+                        </div>
+                        <a href="@Url.Action("XoaVoucher", "GioHang")" style="color: #dc3545; text-decoration: none; font-weight: bold; font-size: 14px;">
+                            <i class="fa-solid fa-trash-can"></i> Hủy mã
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="cart-total-box">
+            <div style="margin-bottom: 10px; font-size: 16px; color: #555;">
+                Tạm tính: <strong>@String.Format("{0:0,0}", ViewBag.TongTien).Replace(",", ".") đ</strong>
+            </div>
+
+            @if (Session["TienGiam"] != null)
+            {
+                <div style="margin-bottom: 10px; font-size: 16px; color: #28a745;">
+                    Khuyến mãi: <strong>- @String.Format("{0:0,0}", Session["TienGiam"]).Replace(",", ".") đ</strong>
+                </div>
+
+                var thanhTien = ViewBag.TongTien - (decimal)Session["TienGiam"];
+                <div style="margin-bottom: 15px; font-size: 18px;">
+                    Tổng thanh toán: <span class="total-price">@String.Format("{0:0,0}", thanhTien).Replace(",", ".") đ</span>
+                </div>
+            }
+            else
+            {
+                <div style="margin-bottom: 15px; font-size: 18px;">
+                    Tổng thanh toán: <span class="total-price">@String.Format("{0:0,0}", ViewBag.TongTien).Replace(",", ".") đ</span>
+                </div>
+            }
+
+            <a href="@Url.Action("DatHang", "GioHang")" class="btn-checkout" style="text-decoration:none; display:inline-block; text-align:center; box-sizing:border-box;">TIẾN HÀNH ĐẶT HÀNG</a>
+        </div>
+    }
+</div>
+
+@if (TempData["LoiTonKho"] != null)
+{
+    <script>
+        alert('@Html.Raw(TempData["LoiTonKho"])');
+    </script>
+}

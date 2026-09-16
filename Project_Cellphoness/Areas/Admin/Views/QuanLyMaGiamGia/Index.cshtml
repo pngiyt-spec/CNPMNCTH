@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.MaGiamGia>
+
+@{
+    ViewBag.Title = "Quản lý Mã Giảm Giá";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 20px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-ticket"></i> QUẢN LÝ MÃ GIẢM GIÁ (VOUCHER)</h2>
+        <a href="@Url.Action("Create", "QuanLyMaGiamGia")" style="background: var(--red-cps); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+            <i class="fa-solid fa-plus"></i> Tạo Mã Mới
+        </a>
+    </div>
+
+    @if (TempData["LoiXoa"] != null)
+    {
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+            <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiXoa"]
+        </div>
+    }
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #343a40; color: white; text-align: left;">
+                <th style="padding: 12px;">Mã Code</th>
+                <th style="padding: 12px;">Mức giảm</th>
+                <th style="padding: 12px;">Giảm tối đa</th>
+                <th style="padding: 12px;">Thời hạn</th>
+                <th style="padding: 12px; text-align: center;">SL</th>
+                <th style="padding: 12px; text-align: center;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef;">
+                    <td style="padding: 12px; font-weight: bold; color: var(--red-cps);">@item.MaVoucher</td>
+                    <td style="padding: 12px; font-weight: bold; color: #28a745;">- @item.PhanTramGiam%</td>
+                    <td style="padding: 12px;">@(item.GiaTriToiDa.HasValue ? String.Format("{0:0,0}", item.GiaTriToiDa) + "đ" : "Không giới hạn")</td>
+                    <td style="padding: 12px; font-size: 13px;">
+                        Từ: @item.NgayBatDau.ToString("dd/MM/yyyy HH:mm") <br />
+                        Đến: @item.NgayKetThuc.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+                    <td style="padding: 12px; text-align: center; font-weight: bold;">@item.SoLuong</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <a href="@Url.Action("Delete", "QuanLyMaGiamGia", new { id = item.MaVoucher })" onclick="return confirm('Xóa mã @item.MaVoucher?');" style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px;">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

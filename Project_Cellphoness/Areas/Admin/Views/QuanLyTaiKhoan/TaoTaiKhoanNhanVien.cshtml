@@ -1,0 +1,60 @@
+﻿@model Project_Cellphoness.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Cấp Tài Khoản Nhân Viên";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 600px; margin: 30px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid var(--red-cps, #D70018); padding-bottom: 10px;">
+        <i class="fa-solid fa-user-plus"></i> CẤP TÀI KHOẢN NHÂN VIÊN
+    </h2>
+
+    @if (ViewBag.ThongBaoLoi != null)
+    {
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #f5c6cb;">
+            <i class="fa-solid fa-triangle-exclamation"></i> @ViewBag.ThongBaoLoi
+        </div>
+    }
+
+    @using (Html.BeginForm("TaoTaiKhoanNhanVien", "QuanLyTaiKhoan", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Họ và tên nhân viên:</label>
+            @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px;", required = "required" })
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Địa chỉ Email (Dùng để đăng nhập):</label>
+            @Html.TextBoxFor(m => m.Email, new { @type = "email", @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px;", required = "required" })
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Mật khẩu cấp phát:</label>
+            @Html.TextBoxFor(m => m.MatKhau, new { @type = "password", @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px;", required = "required" })
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Số điện thoại liên hệ:</label>
+            @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px;" })
+        </div>
+
+        <!-- Khối hiển thị quyền mặc định (Chỉ đọc) -->
+        <div style="margin-bottom: 25px; background: #e9ecef; padding: 15px; border-radius: 5px; border: 1px dashed #ccc;">
+            <span style="font-weight: bold; color: #495057;">Chức vụ hệ thống:</span>
+            <span style="color: #007bff; font-weight: bold; margin-left: 10px;">Nhân viên (Mã: 3)</span>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: #6c757d;">* Tài khoản này chỉ có quyền xem, quản lý đơn hàng và duyệt bình luận. Không có quyền can thiệp vào tài khoản khác.</p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="background: var(--red-cps, #D70018); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-user-check"></i> XÁC NHẬN TẠO
+            </button>
+            <a href="/Admin/QuanLyTaiKhoan" style="background: #6c757d; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; display: flex; align-items: center;">
+                Quay lại
+            </a>
+        </div>
+    }
+</div>

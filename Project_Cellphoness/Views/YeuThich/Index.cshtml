@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.SanPham>
+
+@{
+    ViewBag.Title = "Sản phẩm yêu thích";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .wishlist-container {
+        max-width: 1000px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .wishlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .wishlist-card {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        position: relative;
+        transition: 0.3s;
+    }
+
+        .wishlist-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+    .btn-remove-wishlist {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #999;
+        background: #f0f0f0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .btn-remove-wishlist:hover {
+            background: #D70018;
+            color: white;
+        }
+</style>
+
+<div class="wishlist-container">
+    <h2 style="color: #D70018; margin-bottom: 20px; font-weight: 800; text-transform: uppercase;">
+        <i class="fa-solid fa-heart"></i> MÁY BẠN ĐÃ LƯU TIM
+    </h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div style="text-align: center; padding: 50px;">
+            <i class="fa-regular fa-heart" style="font-size: 50px; color: #ccc; margin-bottom: 15px;"></i>
+            <p style="color: #666; font-size: 16px;">Bạn chưa có sản phẩm yêu thích nào.</p>
+            <a href="/" style="background: #D70018; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px;">Về trang chủ khám phá</a>
+        </div>
+    }
+    else
+    {
+        <div class="wishlist-grid">
+            @foreach (var sp in Model)
+            {
+                <div class="wishlist-card">
+                    <a href="@Url.Action("XoaYeuThich", "YeuThich", new { id = sp.MaSP })" class="btn-remove-wishlist" title="Bỏ thích">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                    <a href="/Home/Details/@sp.MaSP" style="text-decoration:none; color:inherit;">
+                        <img src="@sp.HinhAnh" style="width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/200'" />
+                        <h4 style="font-size: 14px; font-weight: 600; min-height: 40px;">@sp.TenSP</h4>
+                    </a>
+                    <p style="color: #D70018; font-weight: bold; font-size: 16px; margin-bottom: 15px;">@String.Format("{0:0,0}", sp.GiaBan).Replace(",", ".") đ</p>
+                    <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = sp.MaSP, strURL = Request.Url.ToString() })" style="background: #D70018; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: 600; display: block;">
+                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

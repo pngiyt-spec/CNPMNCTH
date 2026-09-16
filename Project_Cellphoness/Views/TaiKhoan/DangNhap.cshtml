@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width:400px; margin: 40px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+    <h2 style="color:var(--red-cps); text-align:center; margin-top:0;">ĐĂNG NHẬP</h2>
+
+    @if (ViewBag.ThongBao != null)
+    {
+        <p style="color: red; text-align: center; font-weight: bold; margin-bottom: 15px;">@ViewBag.ThongBao</p>
+    }
+
+    @if (TempData["ThongBaoOTP"] != null)
+    {
+        <p style="color: #28a745; text-align: center; font-weight: bold; margin-bottom: 15px;">
+            <i class="fa-solid fa-circle-check"></i> @TempData["ThongBaoOTP"]
+        </p>
+    }
+
+    @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
+    {
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight:bold;">Địa chỉ Email</label>
+            <input type="email" name="Email" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập email của bạn..." />
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight:bold;">Mật khẩu</label>
+            <input type="password" name="MatKhau" required style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px; margin-top:5px; box-sizing:border-box;" placeholder="Nhập mật khẩu..." />
+        </div>
+
+        <button type="submit" style="width:100%; background:var(--red-cps); color:#fff; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:16px;">ĐĂNG NHẬP</button>
+
+
+        <div style="text-align: center; margin: 20px 0; position: relative;">
+            <hr style="border-top: 1px solid #ddd;" />
+            <span style="background: #fff; padding: 0 10px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #888;">Hoặc</span>
+        </div>
+
+        <a href="@Url.Action("LoginWithGoogle", "TaiKhoan")" style="display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #ccc; color: #555; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; width: 100%; box-sizing: border-box;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" style="width: 20px; height: 20px; margin-right: 10px;" />
+            Đăng nhập bằng Google
+        </a>
+    }
+
+    <div style="text-align:center; margin-top:20px;">
+        <a href="/TaiKhoan/QuenMatKhau" style="color: #555; font-size: 14px; text-decoration: none; transition: 0.2s;"
+           onmouseover="this.style.color='var(--red-cps)'"
+           onmouseout="this.style.color='#555'">
+            Quên mật khẩu?
+        </a>
+    </div>
+
+    <div style="text-align:center; margin-top:10px;">
+        Chưa có tài khoản? <a href="/TaiKhoan/DangKy" style="color:var(--red-cps); font-weight:bold; text-decoration:none;">Đăng ký ngay</a>
+    </div>
+</div>

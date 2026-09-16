@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.SanPham>
+
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Dùng lại CSS thẻ sản phẩm của trang chủ */
+    .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        color: #333;
+        text-transform: uppercase;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+    .product-img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 10px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 38px;
+    }
+
+    .product-price {
+        color: #D70018;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: auto;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-cart {
+        background-color: #D70018;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        text-decoration: none;
+    }
+
+        .btn-add-cart:hover {
+            background-color: #b00012;
+        }
+</style>
+
+<h2 class="section-title"><i class="fa-solid fa-magnifying-glass"></i> KẾT QUẢ TÌM KIẾM CHO: "@ViewBag.TuKhoa"</h2>
+
+<div class="product-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var sp in Model)
+        {
+            <div class="product-card">
+                <a href="/Home/Details/@sp.MaSP" style="text-decoration:none; color:inherit;">
+                    <img src="@sp.HinhAnh" class="product-img" alt="@sp.TenSP" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                    <h3 class="product-name">@sp.TenSP</h3>
+                </a>
+
+                <p class="product-price">@String.Format("{0:0,0}", sp.GiaBan).Replace(",", ".") đ</p>
+
+                <!-- Nút Thêm vào giỏ -->
+                <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = sp.MaSP, strURL = Request.Url.ToString() })" class="btn-add-cart">
+                    <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="grid-column: 1 / -1; text-align: center; padding: 50px; background: #fff; border-radius: 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" style="width:100px; opacity: 0.5; margin-bottom: 20px;" />
+            <h3 style="color: #666;">Rất tiếc, chúng tôi không tìm thấy sản phẩm nào khớp với "@ViewBag.TuKhoa"</h3>
+            <p style="color: #999;">Bạn hãy thử tìm kiếm với một từ khóa khác ngắn gọn hơn nhé!</p>
+            <a href="/" style="display:inline-block; margin-top:15px; color: var(--red-cps); font-weight:bold; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
+        </div>
+    }
+</div>

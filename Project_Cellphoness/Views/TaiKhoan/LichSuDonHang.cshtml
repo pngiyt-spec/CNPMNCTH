@@ -1,0 +1,149 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.DonHang>
+
+@{
+    ViewBag.Title = "Lịch sử mua hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1100px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-clock-rotate-left"></i> LỊCH SỬ ĐƠN HÀNG CỦA BẠN</h2>
+        <a href="/" style="color: var(--red-cps); font-weight: bold; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Tiếp tục mua sắm</a>
+    </div>
+
+    @if (TempData["ThongBaoHuy"] != null)
+    {
+        <div style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #c8e6c9;">
+            <i class="fa-solid fa-circle-check"></i> @TempData["ThongBaoHuy"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div style="text-align: center; padding: 40px 0;">
+            <h3 style="color: #666;">Bạn chưa có đơn hàng nào!</h3>
+        </div>
+    }
+    else
+    {
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background-color: #f8f9fa; color: #333; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 15px 10px;">Mã ĐH</th>
+                    <th style="padding: 15px 10px;">Ngày đặt</th>
+                    <th style="padding: 15px 10px;">Tổng tiền</th>
+                    <th style="padding: 15px 10px;">Trạng thái</th>
+                    <th style="padding: 15px 10px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px 10px; font-weight: bold; color: var(--red-cps);">#@item.MaDH</td>
+                        <td style="padding: 15px 10px; font-size: 14px; color: #555;">
+                            @(item.NgayDat.HasValue ? item.NgayDat.Value.ToString("dd/MM/yyyy HH:mm") : "")
+                        </td>
+                        <td style="padding: 15px 10px; font-weight: bold; color: var(--red-cps);">
+                            @String.Format("{0:0,0}", item.TongTien).Replace(",", ".") đ
+                        </td>
+                        <td style="padding: 15px 10px; font-size: 13px; font-weight: bold; max-width: 250px;">
+                            @if (string.IsNullOrEmpty(item.TrangThaiDH))
+                            {
+                                <span style="color: #007bff;">Chờ duyệt</span>
+                            }
+                            else if (item.TrangThaiDH.Contains("Đã hủy"))
+                            {
+                                <span style="color: #dc3545;">@item.TrangThaiDH</span>
+                            }
+                            else
+                            {
+                                <span style="color: #28a745;">@item.TrangThaiDH</span>
+                            }
+                        </td>
+                        <td style="padding: 15px 10px; text-align: center;">
+                            <!-- LỚP BẢO VỆ FRONTEND: Ẩn nút nếu đang giao hàng, hoàn thành hoặc đã hủy -->
+                            @if (string.IsNullOrEmpty(item.TrangThaiDH) || (!item.TrangThaiDH.Contains("Đã hủy") && item.TrangThaiDH != "Đang giao hàng" && item.TrangThaiDH != "Hoàn thành"))
+                            {
+                                <a href="javascript:void(0);"
+                                   onclick="yeuCauHuyDon(@item.MaDH);"
+                                   style="background: #dc3545; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 13px; display: inline-block;">
+                                    <i class="fa-solid fa-xmark"></i> Hủy đơn
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<div id="customModalHuyDon" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; font-family: Arial, sans-serif;">
+    <div style="background:#fff; padding:25px; border-radius:12px; width:100%; max-width:450px; box-shadow:0 5px 25px rgba(0,0,0,0.2); text-align:left; position:relative; box-sizing:border-box;">
+
+        <h3 style="color:#dc3545; margin-top:0; font-size:18px; font-weight:bold; border-bottom:1px solid #eee; padding-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-circle-exclamation"></i> Lý do hủy đơn hàng
+        </h3>
+
+        <p style="color:#555; font-size:14px; margin-bottom:15px; line-height:1.4;">
+            Vui lòng cho biết lý do bạn muốn hủy đơn hàng này để hệ thống ghi nhận và cải thiện dịch vụ:
+        </p>
+
+        <input type="hidden" id="modalMaDH" />
+
+        <textarea id="modalLyDo" rows="4" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px; resize:none; box-sizing:border-box; font-family:inherit; font-size:14px; outline:none; transition:0.2s;" placeholder="Nhập lý do hủy tại đây... (Ví dụ: Đổi ý không mua nữa, đặt nhầm màu sản phẩm...)"></textarea>
+
+        <div id="modalError" style="color:#dc3545; font-size:13px; font-weight:bold; margin-top:8px; display:none;">
+            * Bạn phải nhập lý do thì mới có thể hủy đơn!
+        </div>
+
+        <div style="text-align:right; margin-top:20px; display:flex; gap:10px; justify-content:flex-end;">
+            <button onclick="dongModalHuyDon()" style="background:#e9ecef; color:#495057; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:14px; transition:0.2s;">
+                Đóng
+            </button>
+            <button onclick="xacNhanHuyDonModal()" style="background:#dc3545; color:#fff; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:14px; transition:0.2s;">
+                Xác nhận hủy
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    #customModalHuyDon button:hover {
+        opacity: 0.9;
+    }
+
+    #modalLyDo:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 5px rgba(220, 53, 69, 0.2);
+    }
+</style>
+
+<script>
+    function yeuCauHuyDon(maDH) {
+        document.getElementById("modalMaDH").value = maDH;
+        document.getElementById("modalLyDo").value = "";
+        document.getElementById("modalError").style.display = "none";
+        document.getElementById("customModalHuyDon").style.display = "flex";
+    }
+
+    function dongModalHuyDon() {
+        document.getElementById("customModalHuyDon").style.display = "none";
+    }
+
+    function xacNhanHuyDonModal() {
+        var maDH = document.getElementById("modalMaDH").value;
+        var lyDo = document.getElementById("modalLyDo").value;
+        var errorDiv = document.getElementById("modalError");
+
+        if (!lyDo || lyDo.trim() === "") {
+            errorDiv.style.display = "block";
+            document.getElementById("modalLyDo").focus();
+            return;
+        }
+
+        window.location.href = '/TaiKhoan/HuyDonHang?MaDH=' + maDH + '&lyDo=' + encodeURIComponent(lyDo.trim());
+    }
+</script>

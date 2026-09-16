@@ -1,0 +1,467 @@
+﻿@model Project_Cellphoness.Models.SanPham
+
+@{
+    ViewBag.Title = Model.TenSP;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* ================= BỐ CỤC TRANG CHI TIẾT ================= */
+    .product-detail-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        margin-top: 20px;
+    }
+
+    .product-image-col {
+        flex: 1;
+        min-width: 300px;
+        text-align: center;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+        .product-image-col img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            max-height: 400px;
+        }
+
+    .product-info-col {
+        flex: 1.5;
+        min-width: 300px;
+    }
+
+    .product-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .product-price-box {
+        background-color: #fcebeb;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .price-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .price-value {
+        color: #D70018;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 5px 0 0 0;
+    }
+
+    .stock-status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .in-stock {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .out-stock {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .specs-box {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .specs-title {
+        background-color: #f8f9fa;
+        padding: 10px 15px;
+        font-weight: bold;
+        margin: 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .specs-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .specs-table th, .specs-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .specs-table th {
+            width: 35%;
+            background-color: #fafafa;
+            text-align: left;
+            color: #555;
+            font-weight: normal;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap; /* Tránh bị rớt dòng khi có quá nhiều nút */
+    }
+
+    .btn-buy-now {
+        flex: 2;
+        min-width: 200px;
+        background-color: #D70018;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background 0.3s;
+    }
+
+        .btn-buy-now:hover {
+            background-color: #b00012;
+        }
+
+    .btn-add-cart-outline {
+        flex: 1;
+        min-width: 120px;
+        background-color: white;
+        color: #D70018;
+        border: 2px solid #D70018;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .btn-add-cart-outline:hover {
+            background-color: #fcebeb;
+        }
+
+    /* ================= SẢN PHẨM GỢI Ý & PHỤ KIỆN (UC40) ================= */
+    .related-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .related-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .related-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+
+    .related-img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        margin-bottom: 15px;
+    }
+
+    .related-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 40px;
+    }
+
+    .related-price {
+        color: #D70018;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: auto;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div style="margin-top:10px; margin-bottom:10px; color:#666; font-size:14px;">
+    <a href="/" style="color:#666; text-decoration:none;"><i class="fa-solid fa-house"></i> Trang chủ</a> >
+    <span>@Model.TenSP</span>
+</div>
+
+<div class="product-detail-container">
+    <div class="product-image-col">
+        <img src="@Model.HinhAnh" alt="@Model.TenSP" onerror="this.src='https://via.placeholder.com/400?text=No+Image'" />
+    </div>
+
+    <div class="product-info-col">
+        <h1 class="product-title">@Model.TenSP</h1>
+
+        @if (Model.SoLuongTon > 0)
+        {
+            <div class="stock-status in-stock"><i class="fa-solid fa-check"></i> Còn hàng (@Model.SoLuongTon máy)</div>
+        }
+        else
+        {
+            <div class="stock-status out-stock"><i class="fa-solid fa-xmark"></i> Tạm hết hàng</div>
+        }
+
+        <div class="product-price-box">
+            <div class="price-label">Giá ưu đãi:</div>
+            <p class="price-value">@String.Format("{0:0,0}", Model.GiaBan).Replace(",", ".") đ</p>
+        </div>
+
+        <div class="specs-box">
+            <h3 class="specs-title">Thông số kỹ thuật</h3>
+            <table class="specs-table">
+                @if (Model.ThongSoKyThuat != null)
+                {
+                    <tr><th>Màn hình</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.ManHinh) ? "Đang cập nhật" : Model.ThongSoKyThuat.ManHinh)</td></tr>
+                    <tr><th>Chip xử lý</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.Chip) ? "Đang cập nhật" : Model.ThongSoKyThuat.Chip)</td></tr>
+                    <tr><th>RAM</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.RAM) ? "Đang cập nhật" : Model.ThongSoKyThuat.RAM)</td></tr>
+                    <tr><th>Bộ nhớ trong (ROM)</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.ROM) ? "Đang cập nhật" : Model.ThongSoKyThuat.ROM)</td></tr>
+                    <tr><th>Camera</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.Camera) ? "Đang cập nhật" : Model.ThongSoKyThuat.Camera)</td></tr>
+                    <tr><th>Pin</th><td>@(string.IsNullOrEmpty(Model.ThongSoKyThuat.Pin) ? "Đang cập nhật" : Model.ThongSoKyThuat.Pin)</td></tr>
+                }
+                else
+                {
+                    <tr><td colspan="2" style="text-align:center;">Dữ liệu cấu hình đang được cập nhật.</td></tr>
+                }
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            @if (Model.SoLuongTon > 0)
+            {
+                <button class="btn-buy-now" onclick="window.location.href='@Url.Action("ThemGioHang", "GioHang", new { iMaSP = Model.MaSP, strURL = Url.Action("DatHang", "GioHang") })'">
+                    MUA NGAY <br><span style="font-size:12px; font-weight:normal;">Giao tận nơi hoặc nhận tại cửa hàng</span>
+                </button>
+                <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = Model.MaSP, strURL = Request.Url.ToString() })" class="btn-add-cart-outline" style="text-decoration:none; text-align:center; display:inline-block;">
+                    <i class="fa-solid fa-cart-plus"></i><br>THÊM VÀO GIỎ
+                </a>
+            }
+            else
+            {
+                <button class="btn-buy-now" style="background:#ccc; cursor:not-allowed;" disabled>
+                    TẠM HẾT HÀNG
+                </button>
+            }
+
+            <a href="@Url.Action("SoSanh", "Home", new { id1 = Model.MaSP })" style="flex: 1; min-width: 100px; background-color: #f8f9fa; color: #333; border: 1px solid #ccc; padding: 15px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-decoration:none; text-align:center; display:inline-block; transition: 0.3s;">
+                <i class="fa-solid fa-code-compare"></i><br>SO SÁNH
+            </a>
+
+            <a href="@Url.Action("ThemYeuThich", "YeuThich", new { id = Model.MaSP, strURL = Request.Url.ToString() })" style="flex: 1; min-width: 100px; background-color: #fff0f0; color: #D70018; border: 1px solid #ffcdd2; padding: 15px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-decoration:none; text-align:center; display:inline-block; transition: 0.3s;">
+                <i class="fa-solid fa-heart"></i><br>LƯU TIM
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="related-products-section" style="margin-top: 40px; border-top: 2px solid #f0f0f0; padding-top: 30px;">
+    <h3 style="font-size: 20px; font-weight: 800; color: #D70018; margin-bottom: 20px; text-transform: uppercase;">
+        <i class="fa-solid fa-tags" style="margin-right: 8px;"></i> Có thể bạn sẽ thích
+    </h3>
+
+    @if (ViewBag.ListGoiY != null && ((List<Project_Cellphoness.Models.SanPham>)ViewBag.ListGoiY).Any())
+    {
+        <div class="related-product-grid">
+            @foreach (var item in (List<Project_Cellphoness.Models.SanPham>)ViewBag.ListGoiY)
+            {
+                <div class="related-card">
+                    <a href="/Home/Details/@item.MaSP" style="text-decoration:none; color:inherit;">
+                        <img src="@item.HinhAnh" class="related-img" alt="@item.TenSP" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                        <h4 class="related-name">@item.TenSP</h4>
+                    </a>
+                    <p class="related-price">@String.Format("{0:0,0}", item.GiaBan).Replace(",", ".") đ</p>
+                    <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = item.MaSP, strURL = Request.Url.ToString() })"
+                       style="background-color: #D70018; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: 600; display: block; width: 100%; box-sizing: border-box; transition: 0.3s;">
+                        <i class="fa-solid fa-cart-plus"></i> Xem nhanh / Mua
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p style="color: #888; font-style: italic;">Hiện tại chưa có sản phẩm gợi ý phù hợp.</p>
+    }
+</div>
+
+<!-- ======================================================================= -->
+<!-- UC40: ĐỀ XUẤT PHỤ KIỆN ĐI KÈM (Lấy sản phẩm có MaHang = 5) -->
+<!-- ======================================================================= -->
+<div class="related-products-section" style="margin-top: 40px; border-top: 2px solid #f0f0f0; padding-top: 30px;">
+    <h3 style="font-size: 20px; font-weight: 800; color: #D70018; margin-bottom: 20px; text-transform: uppercase;">
+        <i class="fa-solid fa-headphones" style="margin-right: 8px;"></i> Phụ kiện mua kèm
+    </h3>
+
+    @{
+        Project_Cellphoness.Models.CellphonesStoreEntities1 db_phukien = new Project_Cellphoness.Models.CellphonesStoreEntities1();
+
+        var dsPhuKien = db_phukien.SanPham
+                                  .Where(sp => sp.MaHang == 5 && sp.TrangThai == 1 && sp.SoLuongTon > 0)
+                                  .Take(4)
+                                  .ToList();
+    }
+
+    @if (dsPhuKien != null && dsPhuKien.Count > 0)
+    {
+        <div class="related-product-grid">
+            @foreach (var pk in dsPhuKien)
+            {
+                <div class="related-card">
+                    <a href="/Home/Details/@pk.MaSP" style="text-decoration:none; color:inherit;">
+                        <img src="@pk.HinhAnh" class="related-img" alt="@pk.TenSP" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                        <h4 class="related-name">@pk.TenSP</h4>
+                    </a>
+                    <p class="related-price">@String.Format("{0:0,0}", pk.GiaBan).Replace(",", ".") đ</p>
+
+                    <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = pk.MaSP, strURL = Request.Url.ToString() })"
+                       style="background-color: #D70018; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: 600; display: block; width: 100%; box-sizing: border-box; transition: 0.3s; margin-top: auto;">
+                        <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p style="color: #888; font-style: italic;">Hiện chưa có phụ kiện đi kèm cho sản phẩm này.</p>
+    }
+</div>
+
+<div style="margin-top: 40px; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 50px;">
+    <h3 style="margin-top: 0; color: #333; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <i class="fa-solid fa-comments"></i> ĐÁNH GIÁ SẢN PHẨM
+    </h3>
+
+    <!-- KHỐI HIỂN THỊ THÔNG BÁO BÌNH LUẬN (THÀNH CÔNG / BỊ LỖI) -->
+    @if (TempData["ThongBaoBinhLuan"] != null)
+    {
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #c3e6cb;">
+            <i class="fa-solid fa-check-circle"></i> @TempData["ThongBaoBinhLuan"]
+        </div>
+    }
+    @if (TempData["LoiBinhLuan"] != null)
+    {
+        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb;">
+            <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiBinhLuan"]
+        </div>
+    }
+
+    @if (Session["TaiKhoan"] != null)
+    {
+        using (Html.BeginForm("GuiBinhLuan", "Home", FormMethod.Post))
+        {
+            <input type="hidden" name="MaSP" value="@Model.MaSP" />
+
+            <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <label style="font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Mức độ hài lòng của bạn:</label>
+                    <select name="SoSao" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 15px; outline: none; cursor: pointer;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5 Sao - Tuyệt vời)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 Sao - Tốt)</option>
+                        <option value="3">⭐⭐⭐ (3 Sao - Khá)</option>
+                        <option value="2">⭐⭐ (2 Sao - Trung bình)</option>
+                        <option value="1">⭐ (1 Sao - Tệ)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <textarea name="NoiDung" required rows="4" style="width: 100%; padding: 15px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; font-family: inherit; font-size: 15px; outline: none;" placeholder="Mời bạn chia sẻ cảm nhận, đánh giá về sản phẩm này..."></textarea>
+            </div>
+
+            <button type="submit" style="background: var(--red-cps); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-paper-plane"></i> GỬI ĐÁNH GIÁ
+            </button>
+        }
+    }
+    else
+    {
+        <div style="background: #f8f9fa; padding: 20px; text-align: center; border-radius: 5px; border: 1px dashed #ccc; margin-bottom: 25px;">
+            <i class="fa-solid fa-lock" style="font-size: 30px; color: #999; margin-bottom: 10px;"></i>
+            <p style="color: #555; font-size: 16px; margin-bottom: 15px;">Bạn cần đăng nhập tài khoản để có thể để lại bình luận và đánh giá sản phẩm này.</p>
+            <a href="/TaiKhoan/DangNhap" style="background: var(--red-cps); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;">Đăng Nhập Ngay</a>
+        </div>
+    }
+
+    <div style="margin-top: 30px;">
+        @{
+            var tatCaDanhGia = ViewBag.ListDanhGia as IEnumerable<Project_Cellphoness.Models.DanhGia>;
+            var dsDaDuyet = tatCaDanhGia != null ? tatCaDanhGia.Where(d => d.PheDuyet == true).ToList() : new List<Project_Cellphoness.Models.DanhGia>();
+        }
+
+        @if (dsDaDuyet.Count > 0)
+        {
+            foreach (var dg in dsDaDuyet)
+            {
+                <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <div style="background: #e9ecef; color: #555; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 18px; margin-right: 15px;">
+                            @(dg.TaiKhoan != null && !string.IsNullOrEmpty(dg.TaiKhoan.HoTen) ? dg.TaiKhoan.HoTen.Substring(0, 1).ToUpper() : "U")
+                        </div>
+                        <div>
+                            <strong style="display: block; color: #333; font-size: 16px;">
+                                @(dg.TaiKhoan != null && !string.IsNullOrEmpty(dg.TaiKhoan.HoTen) ? dg.TaiKhoan.HoTen : "Khách hàng")
+                            </strong>
+                            <span style="font-size: 14px; color: #f5b50a;">
+                                @for (int i = 0; i < dg.SoSao; i++)
+                                {<span>★</span>}
+                                @for (int i = dg.SoSao; i < 5; i++)
+                                {<span style="color: #e4e5e9;">★</span>}
+                            </span>
+                            <span style="font-size: 13px; color: #999; margin-left: 10px;">
+                                <i class="fa-regular fa-clock"></i> @(dg.NgayDG != null ? dg.NgayDG.Value.ToString("dd/MM/yyyy HH:mm") : "")
+                            </span>
+                        </div>
+                    </div>
+                    <div style="margin-left: 55px; color: #444; line-height: 1.6; font-size: 15px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        @dg.NoiDung
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="text-align: center; color: #999; padding: 30px 0;">
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 60px; opacity: 0.2; margin-bottom: 10px;" />
+                <p>Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên trải nghiệm và nhận xét nhé!</p>
+            </div>
+        }
+    </div>
+</div>

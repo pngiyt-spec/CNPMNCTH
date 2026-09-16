@@ -1,0 +1,142 @@
+﻿@{
+    Layout = null; // Bỏ Layout để làm một trang độc lập hoàn toàn
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Hệ thống Quản trị - CellphoneS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e2d; /* Màu nền tối chuyên nghiệp */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: #2b2b40;
+            width: 400px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 35px;
+            color: #fff;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+            .login-logo span {
+                color: #D70018; /* Đỏ CellphoneS */
+            }
+
+        .login-subtitle {
+            color: #a2a3b7;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+            .input-group i {
+                position: absolute;
+                top: 14px;
+                left: 15px;
+                color: #a2a3b7;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 12px 10px 12px 40px;
+                background: #1b1b29;
+                border: 1px solid #323248;
+                color: #fff;
+                border-radius: 5px;
+                font-size: 15px;
+                box-sizing: border-box;
+                outline: none;
+                transition: 0.3s;
+            }
+
+                .input-group input:focus {
+                    border-color: #D70018;
+                    box-shadow: 0 0 5px rgba(215, 0, 24, 0.5);
+                }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #D70018;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-login:hover {
+                background: #b00012;
+            }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 13px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: rgba(255, 77, 77, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="login-logo">ADMIN<span>PORTAL</span></div>
+        <div class="login-subtitle">Đăng nhập vào Hệ thống Quản trị</div>
+
+        @using (Html.BeginForm("DangNhap", "Auth", new { area = "Admin" }, FormMethod.Post))
+        {
+            if (ViewBag.ThongBao != null)
+            {
+                <div class="error-msg"><i class="fa-solid fa-triangle-exclamation"></i> @ViewBag.ThongBao</div>
+            }
+
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" name="Email" placeholder="Email quản trị viên" required />
+            </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="MatKhau" placeholder="Mật khẩu" required />
+            </div>
+
+            <button type="submit" class="btn-login">ĐĂNG NHẬP HỆ THỐNG</button>
+        }
+
+        <div style="margin-top: 20px; font-size: 12px; color: #6c6c80;">
+            <i class="fa-solid fa-shield-halved"></i> Hệ thống được bảo mật chặt chẽ. <br />Mọi hành vi xâm nhập trái phép đều bị ghi nhận.
+        </div>
+    </div>
+
+</body>
+</html>

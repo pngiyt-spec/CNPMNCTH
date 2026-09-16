@@ -1,0 +1,148 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.SanPham>
+
+@{
+    ViewBag.Title = "Điện thoại " + ViewBag.TenHang;
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Sử dụng lại khung Layout đỏ của khách hàng
+}
+
+<style>
+    /* Tiêu đề mục phong cách CellphoneS */
+    .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-top: 25px;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--red-cps);
+        padding-bottom: 8px;
+        display: inline-block;
+    }
+
+    /* CSS Lưới sản phẩm (CSS Grid) */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    /* CSS Thẻ sản phẩm (Card) */
+    .product-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        text-decoration: none;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+    .product-img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .product-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 10px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 38px;
+    }
+
+    .product-price {
+        color: #D70018; /* Đỏ CPS */
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: auto;
+        margin-bottom: 15px;
+    }
+
+    /* Nút thêm vào giỏ */
+    .btn-add-cart {
+        background-color: #D70018;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+    }
+
+        .btn-add-cart:hover {
+            background-color: #b00012;
+        }
+
+    /* Nút quay lại trang chủ */
+    .btn-back {
+        display: inline-block;
+        margin-top: 20px;
+        color: #666;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+        .btn-back:hover {
+            color: var(--red-cps);
+        }
+</style>
+
+<div style="margin-top: 15px; font-size: 14px; color: #666;">
+    <a href="/" style="color: #666; text-decoration: none;">Trang chủ</a> &gt; <span>@ViewBag.TenHang</span>
+</div>
+
+<h2 class="section-title"><i class="fa-solid fa-mobile-screen-button"></i> Điện Thoại @ViewBag.TenHang</h2>
+
+<div class="product-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var sp in Model)
+        {
+            <div class="product-card">
+                <a href="/Home/Details/@sp.MaSP" style="text-decoration:none; color:inherit;">
+                    <img src="@sp.HinhAnh" class="product-img" alt="@sp.TenSP" onerror="this.src='https://via.placeholder.com/200?text=No+Image'" />
+                    <h3 class="product-name">@sp.TenSP</h3>
+                </a>
+
+                <p class="product-price">@String.Format("{0:0,0}", sp.GiaBan).Replace(",", ".") đ</p>
+
+                <a href="@Url.Action("ThemGioHang", "GioHang", new { iMaSP = sp.MaSP, strURL = Request.Url.ToString() })" class="btn-add-cart" style="text-decoration:none; display:block; box-sizing:border-box;">
+                    <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="text-align:center; width:100%; padding:40px; background: #fff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+            <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 80px; opacity: 0.3;" alt="Empty" />
+            <p style="color: #666; font-size: 16px; margin-top: 15px;">Hiện tại chưa có dòng sản phẩm @ViewBag.TenHang nào đang được kinh doanh.</p>
+        </div>
+    }
+</div>
+
+<a href="/" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ mua sắm</a>

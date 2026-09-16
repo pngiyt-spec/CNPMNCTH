@@ -1,0 +1,12 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.HangSanXuat>
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <a href="@Url.Action("SanPhamTheoHang", "Home", new { id = item.MaHang })" class="dropdown-item">
+            <!-- Sử dụng icon điện thoại chung cho mọi hãng được thêm mới từ DB -->
+            <i class="fa-solid fa-mobile-screen"></i> Hãng @item.TenHang
+        </a>
+    }
+}

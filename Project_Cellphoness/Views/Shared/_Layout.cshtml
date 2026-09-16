@@ -1,0 +1,741 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Hệ thống bán lẻ Điện Thoại</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --red-cps: #D70018; /* Màu đỏ đặc trưng */
+            --bg-gray: #f4f6f8; /* Màu nền xám nhạt */
+            --text-dark: #333333;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            background-color: var(--red-cps);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* HIỆU ỨNG DROPDOWN */
+        .header-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu-content {
+            position: absolute;
+            top: 130%;
+            left: 0;
+            background-color: #fff;
+            min-width: 220px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            padding: 10px 0;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dropdown-menu-content::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            border-width: 0 8px 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent #fff transparent;
+        }
+
+        .header-dropdown:hover .dropdown-menu-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            top: 110%;
+        }
+
+        .dropdown-item {
+            color: var(--text-dark);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover {
+            background-color: #fce8eb;
+            color: var(--red-cps);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+        }
+        .dropdown-item:hover i { color: var(--red-cps); }
+
+        .btn-category {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-category:hover { background-color: rgba(255,255,255,0.3); }
+
+        /* ======================================================== */
+        /* CSS MỚI CHO THANH TÌM KIẾM & DROPDOWN GỢI Ý (AUTO-SUGGEST) */
+        /* ======================================================== */
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 450px;
+            margin: 0 20px;
+        }
+
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 2px 10px;
+            align-items: center;
+            height: 38px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-suggest-box {
+            position: absolute;
+            top: 115%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+            z-index: 1002;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+        }
+
+        .suggest-header {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .suggest-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            text-decoration: none;
+            color: #333;
+            transition: 0.2s;
+        }
+
+        .suggest-item:hover {
+            background-color: #fce8eb;
+        }
+
+        .suggest-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggest-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            margin-right: 12px;
+        }
+
+        .suggest-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .suggest-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .suggest-price {
+            font-size: 13px;
+            color: #D70018;
+            font-weight: bold;
+        }
+
+        .header-items {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 5px 10px;
+        }
+
+        .header-btn i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .header-btn:hover {
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 8px;
+        }
+
+        .user-dropdown .dropdown-menu-content {
+            left: auto;
+            right: 0;
+            min-width: 200px;
+        }
+        .user-dropdown .dropdown-menu-content::before {
+            left: auto;
+            right: 30px;
+        }
+
+        .cart-wrapper { position: relative; }
+        .cart-badge {
+            position: absolute; top: -5px; right: 5px; background: #FFB800;
+            color: var(--text-dark); padding: 2px 6px; border-radius: 50%; font-size: 11px; font-weight: bold;
+        }
+        .main-content { max-width: 1200px; margin: 20px auto; padding: 0 10px; min-height: 70vh; }
+        .cps-footer { background-color: #f8f9fa; padding: 40px 0 20px 0; border-top: 1px solid #eee; margin-top: 50px; }
+        .cps-container { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
+        .cps-col { flex: 1; min-width: 250px; }
+        .cps-col h4 { font-size: 16px; color: #333; margin-bottom: 15px; font-weight: bold; }
+        .cps-col p, .cps-col a { font-size: 13px; color: #444; text-decoration: none; margin-bottom: 10px; display: block; line-height: 1.5; }
+        .cps-col a:hover { color: var(--red-cps); }
+        .cps-newsletter { background: #fdf5f5; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .cps-newsletter input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .cps-social-icons i { font-size: 24px; margin-right: 10px; color: #555; transition: 0.3s; }
+        .cps-social-icons i.fa-youtube:hover { color: #ff0000; }
+        .cps-social-icons i.fa-facebook:hover { color: #1877f2; }
+        .cps-partner-badge { display: inline-block; background: #D70018; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; font-size: 14px; }
+
+        /* Widget Chat & Nút nổi */
+        .chat-widget-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
+        .chat-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s; text-decoration: none; border: none; cursor: pointer; }
+        .chat-btn:hover { transform: scale(1.15); }
+        .scroll-top-btn { background-color: #333; color: white; font-size: 20px; display: none; }
+        keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 104, 255, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(0, 104, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 104, 255, 0); } }
+        .zalo-btn { background-color: #0068ff; animation: pulse 2s infinite; }
+        .mess-btn { background: linear-gradient(45deg, #00B2FF, #006AFF); color: white; font-size: 28px; }
+
+        /* ======================================================== */
+        /* CSS MỚI CHO TRỢ LÝ AI */
+        /* ======================================================== */
+        .ai-btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            font-size: 26px;
+            box-shadow: 0 0 15px rgba(255, 75, 43, 0.5);
+        }
+
+        .ai-chat-box {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 10000;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transform-origin: bottom right;
+            animation: scaleUp 0.3s ease-out forwards;
+        }
+
+        keyframes scaleUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .ai-chat-close { cursor: pointer; font-size: 18px; transition: 0.2s; }
+        .ai-chat-close:hover { transform: rotate(90deg); }
+
+        .ai-chat-body {
+            padding: 15px;
+            height: 350px;
+            overflow-y: auto;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-msg-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .msg-user {
+            background: var(--red-cps);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-bot {
+            background: #f1f3f5;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .ai-chat-footer {
+            padding: 12px;
+            border-top: 1px solid #eaeaea;
+            display: flex;
+            gap: 10px;
+            background: #fff;
+        }
+
+        .ai-chat-footer input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .ai-chat-footer input:focus { border-color: #ff4b2b; }
+
+        .ai-chat-footer button {
+            background: none;
+            border: none;
+            color: #ff4b2b;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ai-chat-footer button:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <i class="fa-solid fa-mobile-screen-button"></i> AiraStore
+            </a>
+
+            <div class="header-dropdown" style="margin-left: 15px;">
+                <div class="btn-category">
+                    <i class="fa-solid fa-bars"></i> Danh mục
+                </div>
+                <div class="dropdown-menu-content">
+                    @Html.Action("MenuDanhMuc", "Home")
+                </div>
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- KHUNG TÌM KIẾM THÔNG MINH AUTO-SUGGEST -->
+            <!-- ======================================================== -->
+            <div class="search-container">
+                <form action="@Url.Action("TimKiem", "Home")" method="get" class="search-box">
+                    <input type="text" name="tuKhoa" id="txtSearchMain" placeholder="Bạn cần tìm gì hôm nay?" autocomplete="off" required oninput="goiYTimKiemSmart()" />
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+
+                <!-- Hộp Dropdown Gợi Ý Sẽ Hiện Lên Ở Đây -->
+                <div id="search-suggest-box" class="search-suggest-box">
+                    <!-- Javascript sẽ nhồi dữ liệu vào đây -->
+                </div>
+            </div>
+
+            <div class="header-items">
+                <a href="@Url.Action("TinTuc", "Home")" class="header-btn">
+                    <i class="fa-regular fa-newspaper"></i>
+                    <span>Tin tức</span>
+                </a>
+
+                <a href="@Url.Action("Index", "YeuThich")" class="header-btn">
+                    <i class="fa-solid fa-heart"></i>
+                    <span>Yêu thích</span>
+                </a>
+
+                @Html.Action("GioHangPartial", "GioHang")
+
+                @{
+                    var taiKhoan = Session["TaiKhoan"] as Project_Cellphoness.Models.TaiKhoan;
+                }
+
+                @if (taiKhoan == null)
+                {
+                    <a href="/TaiKhoan/DangNhap" class="header-btn">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Đăng nhập</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="header-dropdown user-dropdown">
+                        <div class="header-btn" style="padding-top: 2px;">
+                            <i class="fa-solid fa-circle-user" style="font-size: 22px;"></i>
+                            <span style="font-weight: bold;">
+                                @taiKhoan.HoTen.Split(' ').Last() <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>
+                            </span>
+                        </div>
+
+                        <div class="dropdown-menu-content">
+                            <a href="@Url.Action("ThongTinCaNhan", "TaiKhoan")" class="dropdown-item">
+                                <i class="fa-regular fa-id-card"></i> Hồ sơ của tôi
+                            </a>
+                            <a href="@Url.Action("LichSuDonHang", "TaiKhoan")" class="dropdown-item">
+                                <i class="fa-solid fa-box-open"></i> Lịch sử đơn hàng
+                            </a>
+                            <a href="@Url.Action("DoiMatKhau", "TaiKhoan")" class="dropdown-item">
+                                <i class="fa-solid fa-lock"></i> Đổi mật khẩu
+                            </a>
+                            <div style="border-top: 1px solid #eee; margin: 5px 0;"></div>
+                            <a href="@Url.Action("DangXuat", "TaiKhoan")" class="dropdown-item" style="color: #D70018;">
+                                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <footer class="cps-footer">
+        <div class="cps-container">
+            <div class="cps-col">
+                <h4>Tổng đài hỗ trợ miễn phí</h4>
+                <p>Mua hàng - bảo hành <strong>1800.2097</strong> (7h30 - 22h00)</p>
+                <p>Khiếu nại <strong>1800.2063</strong> (8h00 - 21h30)</p>
+                <h4 style="margin-top: 20px;">Phương thức thanh toán</h4>
+                <div style="font-size: 28px; color: #555;">
+                    <i class="fa-brands fa-apple-pay"></i>
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-brands fa-cc-paypal"></i>
+                </div>
+            </div>
+            <div class="cps-col">
+                <h4>Thông tin và chính sách</h4>
+                <a href="#">Mua hàng và thanh toán Online</a>
+                <a href="#">Chính sách giao hàng</a>
+                <a href="#">Chính sách đổi trả</a>
+                <a href="#">Trung tâm bảo hành chính hãng</a>
+            </div>
+            <div class="cps-col">
+                <h4>Dịch vụ và thông tin khác</h4>
+                <a href="#">Khách hàng doanh nghiệp (B2B)</a>
+                <a href="#">Quy chế hoạt động</a>
+                <a href="#">Chính sách Bảo mật</a>
+                <h4 style="margin-top: 20px;">App AiraStore</h4>
+                <div style="background: #fff; padding: 10px; border-radius: 5px; display: inline-block; border: 1px solid #ddd;">
+                    <i class="fa-solid fa-qrcode" style="font-size: 60px; color: #D70018;"></i>
+                </div>
+            </div>
+            <div class="cps-col">
+                <h4>Kết nối với chúng tôi</h4>
+                <div class="cps-social-icons">
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+                <h4 style="margin-top: 20px;">Hệ thống thành viên</h4>
+                <div class="cps-partner-badge">dienthoaivui</div>
+                <div class="cps-partner-badge" style="background: #000;">careS</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 13px; color: #666;">
+            <p style="margin: 0;">&copy; @DateTime.Now.Year - Aira-shiratorri is the best. Hệ thống bán lẻ điện thoại siu cấp vip pro.</p>
+        </div>
+    </footer>
+
+    <!-- ======================================================== -->
+    <!-- KHU VỰC NÚT NỔI VÀ KHUNG CHAT AI -->
+    <!-- ======================================================== -->
+    <div class="chat-widget-container no-print">
+        <button id="btnScrollTop" class="chat-btn scroll-top-btn" onclick="scrollToTop()" title="Lên đầu trang">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+
+        <!-- Nút Trợ lý AI mới thêm vào -->
+        <button onclick="toggleAIChat()" class="chat-btn ai-btn" title="Hỏi AI Tư Vấn">
+            <i class="fa-solid fa-robot fa-bounce" style="--fa-animation-duration: 3s;"></i>
+        </button>
+
+        <a href="https://www.facebook.com/share/15yEeuiapDZ/" target="_blank" class="chat-btn mess-btn">
+            <i class="fa-brands fa-facebook-messenger"></i>
+        </a>
+        <a href="https://zalo.me/0868749948" target="_blank" class="chat-btn zalo-btn">
+            <img src="https://inhoangha.com/uploads/tai-zalo-logo-vector.jpg" style="width: 35px; border-radius: 50%;" />
+        </a>
+    </div>
+
+    <!-- Khung giao diện Chat AI -->
+    <div id="aiChatBox" class="ai-chat-box no-print">
+        <div class="ai-chat-header">
+            <span><i class="fa-solid fa-wand-magic-sparkles"></i> AI Trợ Lý AiraStore</span>
+            <i class="fa-solid fa-xmark ai-chat-close" onclick="toggleAIChat()"></i>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-msg-bubble msg-bot">
+                Chào bạn! Mình là AI trợ lý ảo của AiraStore. Mình có thể giúp bạn tìm kiếm điện thoại, tư vấn cấu hình, hoặc giải đáp các thắc mắc. Bạn cần hỗ trợ gì ạ?
+            </div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" id="aiChatInput" placeholder="Hỏi AI tư vấn..." onkeypress="handleAIKeyPress(event)" autocomplete="off" />
+            <button onclick="sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // ========================================================
+        // JS XỬ LÝ DROPDOWN GỢI Ý TÌM KIẾM (AUTO-SUGGEST)
+        // ========================================================
+        let timKiemTimeout = null;
+
+        function goiYTimKiemSmart() {
+            const tuKhoa = document.getElementById('txtSearchMain').value.trim();
+            const suggestBox = document.getElementById('search-suggest-box');
+
+            if (tuKhoa.length < 1) {
+                suggestBox.style.display = 'none';
+                return;
+            }
+
+            // Kỹ thuật Debounce: Chờ khách gõ xong (300ms) mới gửi Request để không bị lag web
+            clearTimeout(timKiemTimeout);
+            timKiemTimeout = setTimeout(() => {
+                fetch(`/Home/GoiYTimKiem?tuKhoa=${encodeURIComponent(tuKhoa)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html = `<div class="suggest-header"><i class="fa-solid fa-fire" style="color:#D70018;"></i> Có phải bạn muốn tìm</div>`;
+                            data.forEach(item => {
+                                // Định dạng tiền tệ VND
+                                let price = item.GiaBan.toLocaleString('vi-VN') + 'đ';
+                                html += `
+                                        <a href="/Home/Details/${item.MaSP}" class="suggest-item">
+                                            <img src="${item.HinhAnh}" class="suggest-img" onerror="this.src='https://via.placeholder.com/50'"/>
+                                            <div class="suggest-info">
+                                                <span class="suggest-name">${item.TenSP}</span>
+                                                <span class="suggest-price">${price}</span>
+                                            </div>
+                                        </a>
+                                    `;
+                            });
+                            suggestBox.innerHTML = html;
+                            suggestBox.style.display = 'block';
+                        } else {
+                            suggestBox.innerHTML = `<div style="padding: 15px; text-align: center; color: #666;"><i class="fa-solid fa-face-frown"></i> Không tìm thấy kết quả nào cho "${tuKhoa}"</div>`;
+                            suggestBox.style.display = 'block';
+                        }
+                    })
+                    .catch(err => console.log('Lỗi lấy gợi ý:', err));
+            }, 300);
+        }
+
+        // Tự động ẩn khung gợi ý khi click chuột ra chỗ khác
+        document.addEventListener('click', function (e) {
+            const suggestBox = document.getElementById('search-suggest-box');
+            const searchInput = document.getElementById('txtSearchMain');
+            if (e.target !== searchInput && !suggestBox.contains(e.target)) {
+                suggestBox.style.display = 'none';
+            }
+        });
+
+        // Tự động hiện lại khung gợi ý khi click chuột vào lại ô tìm kiếm
+        document.getElementById('txtSearchMain').addEventListener('focus', function () {
+            if (this.value.trim().length > 0) {
+                goiYTimKiemSmart();
+            }
+        });
+
+        // JS Xử lý cuộn trang
+        window.onscroll = function () { checkScrollPosition() };
+
+        function checkScrollPosition() {
+            var btnTop = document.getElementById("btnScrollTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btnTop.style.display = "flex";
+            } else {
+                btnTop.style.display = "none";
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // JS XỬ LÝ CHAT AI
+        function toggleAIChat() {
+            const chatBox = document.getElementById('aiChatBox');
+            if (chatBox.style.display === 'flex') {
+                chatBox.style.display = 'none';
+            } else {
+                chatBox.style.display = 'flex';
+                document.getElementById('aiChatInput').focus();
+            }
+        }
+
+        function handleAIKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        function sendAIMessage() {
+            const inputField = document.getElementById('aiChatInput');
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            // 1. In câu hỏi của User lên giao diện
+            appendAIMessage(message, 'user');
+            inputField.value = ''; // Xóa ô nhập
+
+            // 2. Hiển thị trạng thái AI đang gõ
+            const typingId = 'typing-' + Date.now();
+            appendAIMessage('<i class="fa-solid fa-ellipsis fa-fade"></i> Trợ lý đang suy nghĩ...', 'bot', typingId);
+
+            // 3. Gửi Ajax (fetch) lên Server (Sẽ xử lý trong HomeController)
+            fetch('/Home/TuVanAI', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cauHoi: message })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Xóa trạng thái đang gõ
+                    document.getElementById(typingId).remove();
+
+                    if (data.success) {
+                        // In câu trả lời của AI
+                        appendAIMessage(data.answer, 'bot');
+                    } else {
+                        appendAIMessage('Xin lỗi, hệ thống AI đang bận. Bạn vui lòng thử lại sau nhé!', 'bot');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById(typingId).remove();
+                    appendAIMessage('Kết nối đến máy chủ thất bại. Vui lòng kiểm tra lại mạng.', 'bot');
+                });
+        }
+
+        function appendAIMessage(text, sender, elementId = '') {
+            const chatBody = document.getElementById('aiChatBody');
+            const div = document.createElement('div');
+            div.className = `ai-msg-bubble msg-${sender}`;
+            if (elementId) div.id = elementId;
+
+            // Xử lý xuống dòng cho text
+            div.innerHTML = text.replace(/\n/g, '<br/>');
+
+            chatBody.appendChild(div);
+            // Cuộn xuống cuối cùng
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+
+    <!-- THÊM DÒNG NÀY ĐỂ NHẬN CODE TỪ TRANG SO SÁNH -->
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.HangSanXuat>
+
+@{
+    ViewBag.Title = "Quản lý Hãng Sản Xuất";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 900px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-tags"></i> QUẢN LÝ HÃNG SẢN XUẤT</h2>
+        <a href="@Url.Action("Create", "QuanLyHang")" style="background: var(--red-cps); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+            <i class="fa-solid fa-plus"></i> Thêm Hãng Mới
+        </a>
+    </div>
+
+    @if (TempData["LoiXoa"] != null)
+    {
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+            <i class="fa-solid fa-triangle-exclamation"></i> @TempData["LoiXoa"]
+        </div>
+    }
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #343a40; color: white; text-align: left;">
+                <th style="padding: 12px; font-weight: bold; width: 80px; text-align: center;">Mã Hãng</th>
+                <th style="padding: 12px; font-weight: bold;">Tên Hãng Sản Xuất</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center; width: 180px;">Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef; transition: 0.2s;">
+                    <td style="padding: 12px; font-weight: bold; text-align: center;">#@item.MaHang</td>
+                    <td style="padding: 12px; font-weight: bold; color: var(--red-cps); font-size: 16px;">@item.TenHang</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <a href="@Url.Action("Edit", "QuanLyHang", new { id = item.MaHang })" style="background: #ffc107; color: #333; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; margin-right: 5px;">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </a>
+                        <a href="@Url.Action("Delete", "QuanLyHang", new { id = item.MaHang })" onclick="return confirm('Bạn có chắc chắn muốn xóa hãng @item.TenHang không?');" style="background: #dc3545; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold;">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

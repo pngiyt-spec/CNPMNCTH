@@ -1,0 +1,58 @@
+﻿@model Project_Cellphoness.Models.MaGiamGia
+
+@{
+    ViewBag.Title = "Tạo Mã Giảm Giá";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 800px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h2 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0;">
+        <i class="fa-solid fa-ticket"></i> TẠO MÃ KHUYẾN MÃI MỚI
+    </h2>
+
+    @if (ViewBag.ThongBao != null)
+    {
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+            @ViewBag.ThongBao
+        </div>
+    }
+
+    @using (Html.BeginForm())
+    {
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <div style="flex: 1; min-width: 300px;">
+                <label style="font-weight: bold;">Mã Code (VD: TET2026, VIP10):</label>
+                @Html.TextBoxFor(m => m.MaVoucher, new { @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc; text-transform:uppercase;", required = "required" })
+
+                <label style="font-weight: bold;">Phần trăm giảm (%):</label>
+                @Html.TextBoxFor(m => m.PhanTramGiam, new { type = "number", min = "1", max = "100", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;", required = "required" })
+
+                <label style="font-weight: bold;">Giới hạn giảm tối đa (VNĐ):</label>
+                @Html.TextBoxFor(m => m.GiaTriToiDa, new { type = "number", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;" })
+            </div>
+
+            <div style="flex: 1; min-width: 300px;">
+                <label style="font-weight: bold;">Đơn hàng tối thiểu để áp dụng (VNĐ):</label>
+                @Html.TextBoxFor(m => m.DonToiThieu, new { type = "number", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;" })
+
+                <label style="font-weight: bold;">Số lượng mã phát hành:</label>
+                @Html.TextBoxFor(m => m.SoLuong, new { type = "number", min = "1", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;", required = "required" })
+
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: bold;">Ngày bắt đầu:</label>
+                        @Html.TextBoxFor(m => m.NgayBatDau, new { type = "datetime-local", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;", required = "required" })
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-weight: bold;">Ngày kết thúc:</label>
+                        @Html.TextBoxFor(m => m.NgayKetThuc, new { type = "datetime-local", @class = "form-control", style = "width:100%; padding:10px; margin:5px 0 15px 0; border:1px solid #ccc;", required = "required" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" style="background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px;">
+            <i class="fa-solid fa-floppy-disk"></i> LƯU MÃ KHUYẾN MÃI
+        </button>
+    }
+</div>

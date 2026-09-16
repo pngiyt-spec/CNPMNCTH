@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Thanh toán thất bại";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div style="max-width: 600px; margin: 50px auto; background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-family: Arial, sans-serif;">
+    <img src="https://cdn-icons-png.flaticon.com/512/564/564619.png" style="width: 80px; margin-bottom: 20px;" />
+    <h2 style="color: #dc3545; margin-bottom: 15px;">THANH TOÁN THẤT BẠI!</h2>
+    <p style="color: #666; font-size: 15px; margin-bottom: 25px; line-height: 1.5;">
+        @ViewBag.Message <br />
+        Hệ thống đang bị giáng đoạn. Vui lòng quay lại giỏ hàng để tiến hành thanh toán lại hoặc chọn phương thức COD khác.
+    </p>
+    <a href="/GioHang/LayGioHang" style="background: var(--red-cps); color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
+        QUAY LẠI GIỎ HÀNG
+    </a>
+</div>

@@ -1,0 +1,54 @@
+﻿@model Project_Cellphoness.Models.Banner
+
+@{
+    ViewBag.Title = "Chỉnh sửa Banner";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 700px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h2 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid var(--red-cps, #D70018); padding-bottom: 10px;">
+        <i class="fa-solid fa-pen-to-square"></i> CHỈNH SỬA BANNER
+    </h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.MaBanner)
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Đường dẫn Hình ảnh (URL)</label>
+            @Html.TextBoxFor(model => model.HinhAnh, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px; box-sizing: border-box;", required = "required" })
+
+            <div style="margin-top: 15px; text-align: center; border: 1px dashed #ccc; padding: 10px; background: #f8f9fa;">
+                <p style="margin-top: 0; font-size: 13px; color: #888;">Ảnh xem trước:</p>
+                <img src="@Model.HinhAnh" style="max-width: 100%; max-height: 200px; object-fit: contain;" onerror="this.src='https://via.placeholder.com/800x200?text=Loi+Hinh+Anh'" />
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; color: #555;">Link chuyển hướng khi click (Có thể bỏ trống)</label>
+            @Html.TextBoxFor(model => model.Link, new { @class = "form-control", style = "width:100%; padding:10px; border-radius:5px; border:1px solid #ccc; margin-top:5px; box-sizing: border-box;", placeholder = "VD: /Home/Details/5" })
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <label style="font-weight: bold; color: #555;">Trạng thái hiển thị</label>
+            <div style="margin-top: 8px; font-size: 15px;">
+                <label style="margin-right: 25px; cursor: pointer;">
+                    @Html.RadioButtonFor(model => model.TrangThai, true) <span style="color: #28a745; font-weight: bold;">Đang bật</span>
+                </label>
+                <label style="cursor: pointer;">
+                    @Html.RadioButtonFor(model => model.TrangThai, false) <span style="color: #dc3545; font-weight: bold;">Đang tắt</span>
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="background: var(--red-cps, #D70018); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-floppy-disk"></i> LƯU THAY ĐỔI
+            </button>
+            <a href="/Admin/QuanLyBanner" style="background: #6c757d; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; display: flex; align-items: center;">
+                Quay lại
+            </a>
+        </div>
+    }
+</div>

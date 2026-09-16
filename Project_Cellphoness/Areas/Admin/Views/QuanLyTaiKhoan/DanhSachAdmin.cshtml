@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Project_Cellphoness.Models.TaiKhoan>
+
+@{
+    ViewBag.Title = "Quản lý Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div style="max-width: 1200px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--red-cps); padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin: 0;"><i class="fa-solid fa-user-shield"></i> QUẢN LÝ QUẢN TRỊ VIÊN (ADMIN CẤP CAO)</h2>
+
+        <!-- Vẫn có thể thêm Admin mới thông qua trang tạo tài khoản -->
+        <a href="@Url.Action("TaoTaiKhoanNhanVien", "QuanLyTaiKhoan")" style="background: var(--red-cps); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-plus"></i> Thêm Admin Mới
+        </a>
+    </div>
+
+    @if (TempData["ThongBao"] != null)
+    {
+        <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; border: 1px solid #c3e6cb;">
+            <i class="fa-solid fa-check-circle"></i> @TempData["ThongBao"]
+        </div>
+    }
+
+    <div style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba;">
+        <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> Quản trị viên cấp cao có toàn quyền truy cập hệ thống. Vì lý do bảo mật, bạn không thể tự khóa tài khoản của chính mình hoặc khóa các Admin khác.
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #343a40; color: white; text-align: left;">
+                <th style="padding: 12px; font-weight: bold; width: 60px;">Mã TK</th>
+                <th style="padding: 12px; font-weight: bold;">Họ Tên</th>
+                <th style="padding: 12px; font-weight: bold;">Điện Thoại</th>
+                <th style="padding: 12px; font-weight: bold;">Email / Tài khoản</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center;">Quyền Hạn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr style="border-bottom: 1px solid #e9ecef; transition: 0.2s; background-color: #fafafa;">
+                    <td style="padding: 12px; font-weight: bold;">#@item.MaTK</td>
+                    <td style="padding: 12px; font-weight: bold; color: var(--red-cps);">@item.HoTen</td>
+                    <td style="padding: 12px;">@item.SoDienThoai</td>
+                    <td style="padding: 12px;">@item.Email</td>
+
+                    <td style="padding: 12px; text-align: center;">
+                        <span style="background: #ffc107; color: #000; padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: bold;">
+                            <i class="fa-solid fa-crown"></i> Quyền tối cao
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
