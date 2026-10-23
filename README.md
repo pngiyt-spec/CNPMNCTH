@@ -1,0 +1,1 @@
+- Hoàn thiện chức năng đăng ký (Issue #1)
